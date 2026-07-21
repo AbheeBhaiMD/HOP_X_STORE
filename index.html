@@ -36,7 +36,6 @@
             min-height: 100vh;
         }
 
-        /* Loader */
         .loader {
             position: fixed;
             top: 0;
@@ -68,7 +67,6 @@
             }
         }
 
-        /* Auth Overlay */
         .auth-overlay {
             position: fixed;
             top: 0;
@@ -195,7 +193,6 @@
             margin-top: 4px;
         }
 
-        /* Navbar */
         .navbar {
             background: var(--primary);
             padding: 14px 40px;
@@ -206,6 +203,8 @@
             top: 0;
             z-index: 1000;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            flex-wrap: wrap;
+            gap: 10px;
         }
         .navbar .logo {
             color: white;
@@ -223,20 +222,31 @@
         }
         .navbar .nav-links {
             display: flex;
-            gap: 18px;
+            gap: 14px;
             align-items: center;
             flex-wrap: wrap;
         }
-        .navbar .nav-links a {
+        .navbar .nav-links a,
+        .navbar .nav-links button {
             color: rgba(255, 255, 255, 0.7);
+            background: none;
+            border: none;
             text-decoration: none;
             font-weight: 500;
             transition: var(--transition);
             font-size: 0.9rem;
             cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 8px;
         }
-        .navbar .nav-links a:hover {
+        .navbar .nav-links a:hover,
+        .navbar .nav-links button:hover {
             color: white;
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .navbar .nav-links .active-link {
+            color: var(--accent);
+            background: rgba(79, 140, 255, 0.1);
         }
         .navbar .balance-badge {
             background: rgba(255, 255, 255, 0.08);
@@ -289,14 +299,12 @@
             font-weight: 600;
         }
 
-        /* Container */
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 30px 20px;
         }
 
-        /* Hero */
         .hero {
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             border-radius: var(--radius);
@@ -360,7 +368,6 @@
             opacity: 0.6;
         }
 
-        /* Section Title */
         .section-title {
             font-size: 1.6rem;
             font-weight: 700;
@@ -380,7 +387,6 @@
             margin-left: auto;
         }
 
-        /* Products Grid */
         .products-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -496,7 +502,6 @@
             transform: none;
         }
 
-        /* Deposit */
         .deposit-section {
             background: var(--card);
             border-radius: var(--radius);
@@ -549,7 +554,6 @@
             box-shadow: 0 8px 30px rgba(0, 200, 83, 0.3);
         }
 
-        /* Orders */
         .order-item {
             background: white;
             border-radius: 16px;
@@ -592,7 +596,6 @@
             border-radius: 8px;
         }
 
-        /* Modal */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -718,7 +721,6 @@
             color: var(--primary);
         }
 
-        /* Toast */
         .toast-container {
             position: fixed;
             top: 20px;
@@ -757,7 +759,6 @@
             background: var(--warning);
         }
 
-        /* Empty State */
         .empty-state {
             text-align: center;
             padding: 40px;
@@ -774,7 +775,7 @@
             color: #888;
         }
 
-        /* Admin Panel Specific */
+        /* Admin Panel */
         .admin-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -960,22 +961,19 @@
             background: var(--accent);
             border-radius: 10px;
         }
-        .admin-hidden {
+        .panel-hidden {
             display: none;
         }
-        .admin-visible {
+        .panel-visible {
             display: block;
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
             .navbar {
                 padding: 12px 16px;
-                flex-wrap: wrap;
-                gap: 10px;
             }
             .navbar .nav-links {
-                gap: 10px;
+                gap: 8px;
                 width: 100%;
                 justify-content: center;
             }
@@ -1056,12 +1054,8 @@
             Hub<span>X</span> Store
         </div>
         <div class="nav-links">
-            <a onclick="showUserPanel()">Products</a>
-            <a onclick="showUserPanel()">Deposit</a>
-            <a onclick="showUserPanel()">Orders</a>
-            <a id="adminNavLink" onclick="showAdminPanel()" style="display:none;color:var(--accent);font-weight:600;">
-                <i class="fas fa-user-shield"></i> Admin Panel
-            </a>
+            <button class="active-link" id="userPanelBtn" onclick="showPanel('user')"><i class="fas fa-home"></i> Products</button>
+            <button id="adminPanelBtn" onclick="showPanel('admin')" style="display:none;color:var(--accent);"><i class="fas fa-user-shield"></i> Admin Panel</button>
             <select class="currency-select" id="currencySelect">
                 <option value="usd">$ USD</option>
                 <option value="pkr">₨ PKR</option>
@@ -1082,7 +1076,6 @@
 
         <!-- ===== USER PANEL ===== -->
         <div id="userPanel">
-            <!-- Hero -->
             <section class="container">
                 <div class="hero">
                     <h1>Premium <span class="highlight">Digital Products</span></h1>
@@ -1095,7 +1088,6 @@
                 </div>
             </section>
 
-            <!-- Products -->
             <section class="container" id="products">
                 <div class="section-title">
                     <i class="fas fa-cubes"></i> Available Products
@@ -1109,7 +1101,6 @@
                 </div>
             </section>
 
-            <!-- Deposit -->
             <section class="container" id="deposit">
                 <div class="deposit-section">
                     <h2><i class="fas fa-plus-circle" style="color:var(--success);"></i> Deposit Funds</h2>
@@ -1128,7 +1119,6 @@
                 </div>
             </section>
 
-            <!-- Orders -->
             <section class="container" id="orders">
                 <div class="section-title">
                     <i class="fas fa-history"></i> My Orders
@@ -1150,7 +1140,6 @@
                     <i class="fas fa-chart-pie" style="color:var(--accent);"></i> Admin Dashboard
                 </h1>
 
-                <!-- Stats -->
                 <div class="admin-card" style="margin-bottom:24px;">
                     <h3><i class="fas fa-chart-line"></i> Overview</h3>
                     <div class="stat-row">
@@ -1161,7 +1150,6 @@
                     </div>
                 </div>
 
-                <!-- Admin Grid -->
                 <div class="admin-grid">
                     <div class="admin-card">
                         <h3><i class="fas fa-boxes"></i> Manage Products</h3>
@@ -1207,7 +1195,6 @@
                     </div>
                 </div>
 
-                <!-- Danger Zone -->
                 <div class="admin-card" style="margin-top:24px;border:2px solid var(--danger);">
                     <h3 style="color:var(--danger);"><i class="fas fa-exclamation-triangle"></i> Danger Zone</h3>
                     <div style="display:flex;gap:16px;flex-wrap:wrap;">
@@ -1248,7 +1235,7 @@
 
     <script>
         // ============================================================
-        // FIREBASE CONFIG - YOUR CONFIG
+        // FIREBASE CONFIG
         // ============================================================
         const firebaseConfig = {
             apiKey: "AIzaSyDh5Q95QuIx-e8jDcGNrDyaIG71oXR14I4",
@@ -1264,7 +1251,7 @@
         const auth = firebase.auth();
 
         // ============================================================
-        // COMPLETE PRODUCT DATA (From Screenshots)
+        // PRODUCT DATA
         // ============================================================
         const DEFAULT_PRODUCTS = [{
             id: 'prod_001',
@@ -1274,7 +1261,7 @@
             stock: 919,
             icon: 'fa-robot',
             details: `18 Months Plan\n5TB cloud storage included\nYou can add 5 users\nNo Shared\n100% Private\nNO NEED ANY CARD\nNon Warranty\nWorks in any country no verification`,
-            note: 'The redeem link must be used within 24 hours of receiving the order. 100% genuine Gemini AI Pro subscription activated on your own Gmail. FULL FAMILY ACCOUNT. IT\'S NOT AN INVITE.'
+            note: 'The redeem link must be used within 24 hours.'
         }, {
             id: 'prod_002',
             slug: 'coursera-plus-12m',
@@ -1282,8 +1269,8 @@
             price: 3.00,
             stock: 13,
             icon: 'fa-graduation-cap',
-            details: `Organization Plus (Org+) account\nCertificates will be issued in your own name\nFull access to available courses\nYou can change the password anytime\nThe email address cannot be changed until the subscription expires`,
-            note: 'Log in using provided details. Change name and password after first login. Add recovery email. Connect Google/Facebook.'
+            details: `Organization Plus (Org+) account\nCertificates in your name\nFull access to courses\nChange password anytime`,
+            note: 'Log in using provided details. Change name and password after first login.'
         }, {
             id: 'prod_003',
             slug: 'nord-vpn-3m',
@@ -1292,7 +1279,7 @@
             stock: 585,
             icon: 'fa-shield-halved',
             details: `Premium NordVPN access for 3 months\nUp to 10 devices at once`,
-            note: 'Activation Steps: 1. Open link and click "Claim" 2. Enter email 3. Enter verification code 4. On payment page, scroll down and click "Skip"'
+            note: 'Activation: Open link → Claim → Enter email → Verify → Skip payment'
         }, {
             id: 'prod_004',
             slug: 'lovable-unlimited-lifetime',
@@ -1300,8 +1287,8 @@
             price: 2.00,
             stock: 9,
             icon: 'fa-heart',
-            details: `Unlimited Prompt for Lovable project\nFrozen credits and unlimited prompt support\nLifetime License Key\nReady-to-use\nInstant delivery after purchase`,
-            note: 'Extension Download & Setup Guide: https://hubx-lovable.hubxdigital.workers.dev/'
+            details: `Unlimited Prompt for Lovable project\nFrozen credits and unlimited prompt support\nLifetime License Key`,
+            note: 'Extension Download & Setup Guide available after purchase.'
         }, {
             id: 'prod_005',
             slug: 'lovable-admin-panel-lifetime',
@@ -1309,7 +1296,7 @@
             price: 20.00,
             stock: 0,
             icon: 'fa-crown',
-            details: `Custom branding support\nAPI access & integration\nUnlimited license creation\nLicense validity and expiration management\nTrial license generation\nCustom license key prefix\nCentralized license dashboard\nComplete license tracking and control`,
+            details: `Custom branding support\nAPI access & integration\nUnlimited license creation\nTrial license generation`,
             note: 'Lifetime means access remains valid until service is discontinued.'
         }, {
             id: 'prod_006',
@@ -1318,7 +1305,7 @@
             price: 25.00,
             stock: 3,
             icon: 'fa-cube',
-            details: `Autodesk Edu 3000 Users Admin Panel\nAll Autodesk Apps\n3 Years\nComplete Warranty\nOn your Email\nInstant Delivery`,
+            details: `Autodesk Edu 3000 Users Admin Panel\nAll Autodesk Apps\n3 Years\nComplete Warranty`,
             note: 'Delivery is automatic after payment confirmation.'
         }, {
             id: 'prod_007',
@@ -1327,7 +1314,7 @@
             price: 2.00,
             stock: 32,
             icon: 'fa-pen-fancy',
-            details: `Duration: 1 Month\nOfficial Coupon Code\nFull Time Warranty\nValid for new account only\nNo need card`,
+            details: `Duration: 1 Month\nOfficial Coupon Code\nFull Time Warranty\nValid for new account only`,
             note: 'Use the code within 7 days after delivery.'
         }, {
             id: 'prod_008',
@@ -1361,6 +1348,8 @@
         let isSignup = false;
         let isAdmin = false;
         let editingProductId = null;
+        let currentPanel = 'user';
+        let productsLoaded = false;
 
         const CURRENCY_RATES = { usd: 1, pkr: 278, inr: 83 };
         const CURRENCY_SYMBOLS = { usd: '$', pkr: '₨', inr: '₹' };
@@ -1397,7 +1386,8 @@
         const totalProductsHero = document.getElementById('totalProductsHero');
         const logoutBtn = document.getElementById('logoutBtn');
         const adminBadge = document.getElementById('adminBadge');
-        const adminNavLink = document.getElementById('adminNavLink');
+        const adminPanelBtn = document.getElementById('adminPanelBtn');
+        const userPanelBtn = document.getElementById('userPanelBtn');
 
         const modal = document.getElementById('productModal');
         const modalTitle = document.getElementById('modalTitle');
@@ -1463,19 +1453,26 @@
         // ============================================================
         // PANEL SWITCHING
         // ============================================================
-        function showUserPanel() {
-            userPanel.style.display = 'block';
-            adminPanel.style.display = 'none';
-        }
-
-        function showAdminPanel() {
-            if (!isAdmin) {
-                showToast('Admin access required!', 'error');
-                return;
+        function showPanel(panel) {
+            currentPanel = panel;
+            if (panel === 'user') {
+                userPanel.style.display = 'block';
+                adminPanel.style.display = 'none';
+                userPanelBtn.classList.add('active-link');
+                adminPanelBtn.classList.remove('active-link');
+            } else {
+                if (!isAdmin) {
+                    showToast('Admin access required!', 'error');
+                    return;
+                }
+                userPanel.style.display = 'none';
+                adminPanel.style.display = 'block';
+                adminPanelBtn.classList.add('active-link');
+                userPanelBtn.classList.remove('active-link');
+                renderAdminProducts();
+                renderAdminOrders();
+                updateAdminStats();
             }
-            userPanel.style.display = 'none';
-            adminPanel.style.display = 'block';
-            loadAdminData();
         }
 
         // ============================================================
@@ -1492,7 +1489,7 @@
                 passwordHint.style.display = 'block';
             } else {
                 authBtn.textContent = 'Sign In';
-                switchText.textContent = 'Don\'t have an account?';
+                switchText.textContent = "Don't have an account?";
                 switchLink.textContent = 'Sign Up';
                 authSub.textContent = 'Sign in to access your account';
                 nameGroup.style.display = 'none';
@@ -1533,13 +1530,18 @@
                     }
                     const userCred = await auth.createUserWithEmailAndPassword(email, password);
                     await userCred.user.updateProfile({ displayName: name });
+
+                    // Check if this is admin email
+                    const isAdminUser = email === 'admin@hubx.com';
+
                     await db.collection('users').doc(email).set({
                         name: name,
                         email: email,
-                        balance: 0,
-                        isAdmin: email === 'admin@hubx.com',
+                        balance: isAdminUser ? 1000 : 0,
+                        isAdmin: isAdminUser,
                         createdAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
+
                     authSuccess.textContent = '✅ Account created successfully!';
                     authSuccess.style.display = 'block';
                     showToast('Welcome to HubX Store!', 'success');
@@ -1570,21 +1572,50 @@
                 userEmailDisplay.textContent = userEmail;
 
                 // Check if admin
-                const userDoc = await db.collection('users').doc(userEmail).get();
-                if (userDoc.exists && userDoc.data().isAdmin) {
-                    isAdmin = true;
-                    adminBadge.style.display = 'inline';
-                    adminNavLink.style.display = 'inline';
-                } else {
-                    isAdmin = false;
-                    adminBadge.style.display = 'none';
-                    adminNavLink.style.display = 'none';
+                try {
+                    const userDoc = await db.collection('users').doc(userEmail).get();
+                    if (userDoc.exists && userDoc.data().isAdmin) {
+                        isAdmin = true;
+                        adminBadge.style.display = 'inline';
+                        adminPanelBtn.style.display = 'inline';
+                    } else {
+                        isAdmin = false;
+                        adminBadge.style.display = 'none';
+                        adminPanelBtn.style.display = 'none';
+                    }
+                } catch (e) {
+                    // If user doc doesn't exist yet, create it
+                    if (userEmail === 'admin@hubx.com') {
+                        await db.collection('users').doc(userEmail).set({
+                            name: 'Admin',
+                            email: userEmail,
+                            balance: 1000,
+                            isAdmin: true,
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                        isAdmin = true;
+                        adminBadge.style.display = 'inline';
+                        adminPanelBtn.style.display = 'inline';
+                    } else {
+                        await db.collection('users').doc(userEmail).set({
+                            name: user.displayName || 'User',
+                            email: userEmail,
+                            balance: 0,
+                            isAdmin: false,
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                        isAdmin = false;
+                    }
                 }
 
                 authOverlay.classList.add('hidden');
                 mainNav.style.display = 'flex';
                 mainContent.style.display = 'block';
 
+                // Show user panel by default
+                showPanel('user');
+
+                // Start listeners
                 listenProducts();
                 listenOrders();
                 listenBalance();
@@ -1621,15 +1652,21 @@
                         products.push({ id: doc.id, ...doc.data() });
                     });
                 } else {
-                    products = DEFAULT_PRODUCTS;
-                    for (const p of products) {
-                        db.collection('products').doc(p.id).set(p, { merge: true });
+                    // Seed default products only once
+                    if (!productsLoaded) {
+                        products = DEFAULT_PRODUCTS;
+                        for (const p of products) {
+                            db.collection('products').doc(p.id).set(p, { merge: true });
+                        }
+                        productsLoaded = true;
                     }
                 }
                 renderProducts();
                 updateCounts();
-                renderAdminProducts();
-                updateAdminStats();
+                if (currentPanel === 'admin') {
+                    renderAdminProducts();
+                    updateAdminStats();
+                }
             }, (error) => {
                 console.error('Products error:', error);
                 products = DEFAULT_PRODUCTS;
@@ -1650,8 +1687,10 @@
                     });
                     renderOrders();
                     orderCount.textContent = `${orders.length} orders`;
-                    renderAdminOrders();
-                    updateAdminStats();
+                    if (currentPanel === 'admin') {
+                        renderAdminOrders();
+                        updateAdminStats();
+                    }
                 });
         }
 
@@ -1687,7 +1726,7 @@
                     stockText = `Only ${p.stock} left`; }
 
                 return `
-                    <div class="product-card" onclick="showProductDetail('${p.id}')">
+                    <div class="product-card" onclick="showProductDetail('${p.id}')" style="animation-delay:${index * 0.05}s">
                         <span class="badge-stock ${stockClass}">${stockText}</span>
                         <div class="icon"><i class="fas ${p.icon || 'fa-cube'}"></i></div>
                         <h3>${p.name}</h3>
@@ -1873,12 +1912,6 @@
         // ADMIN PANEL FUNCTIONS
         // ============================================================
 
-        function loadAdminData() {
-            renderAdminProducts();
-            renderAdminOrders();
-            updateAdminStats();
-        }
-
         function renderAdminProducts() {
             if (!products.length) {
                 productList.innerHTML =
@@ -1902,40 +1935,53 @@
         }
 
         function renderAdminOrders() {
-            if (!orders.length) {
-                orderList.innerHTML =
-                    `<div style="color:#888;padding:20px 0;text-align:center;"><i class="fas fa-inbox" style="font-size:2rem;display:block;margin-bottom:8px;"></i>No orders.</div>`;
-                return;
-            }
-            orderList.innerHTML = `
-                <table class="admin-table">
-                    <thead><tr><th>Order</th><th>Product</th><th>Qty</th><th>Total</th><th>Status</th><th>Actions</th></tr></thead>
-                    <tbody>
-                        ${orders.map(o => `
-                            <tr>
-                                <td><span style="font-size:0.7rem;font-family:monospace;">${o.id.slice(0, 8)}</span></td>
-                                <td>${o.product_name}</td>
-                                <td>${o.quantity}</td>
-                                <td>$${o.total.toFixed(2)}</td>
-                                <td><span class="badge-status ${o.status}">${o.status === 'delivered' ? '✅ Delivered' : '⏳ Processing'}</span></td>
-                                <td>
-                                    ${o.status === 'processing' ? `<button class="btn-sm deliver" onclick="deliverOrder('${o.id}')"><i class="fas fa-check"></i></button>` : ''}
-                                    <button class="btn-sm delete" onclick="deleteOrder('${o.id}')"><i class="fas fa-trash"></i></button>
-                                </td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-            `;
+            // Get all orders (not just user's)
+            db.collection('orders').orderBy('createdAt', 'desc').onSnapshot((snapshot) => {
+                const allOrders = [];
+                snapshot.forEach((doc) => {
+                    allOrders.push({ id: doc.id, ...doc.data() });
+                });
+
+                if (!allOrders.length) {
+                    orderList.innerHTML =
+                        `<div style="color:#888;padding:20px 0;text-align:center;"><i class="fas fa-inbox" style="font-size:2rem;display:block;margin-bottom:8px;"></i>No orders.</div>`;
+                    return;
+                }
+
+                orderList.innerHTML = `
+                    <table class="admin-table">
+                        <thead><tr><th>Order</th><th>User</th><th>Product</th><th>Qty</th><th>Total</th><th>Status</th><th>Actions</th></tr></thead>
+                        <tbody>
+                            ${allOrders.map(o => `
+                                <tr>
+                                    <td><span style="font-size:0.7rem;font-family:monospace;">${o.id.slice(0, 8)}</span></td>
+                                    <td><span style="font-size:0.7rem;">${o.userEmail || 'N/A'}</span></td>
+                                    <td>${o.product_name}</td>
+                                    <td>${o.quantity}</td>
+                                    <td>$${o.total.toFixed(2)}</td>
+                                    <td><span class="badge-status ${o.status}">${o.status === 'delivered' ? '✅ Delivered' : '⏳ Processing'}</span></td>
+                                    <td>
+                                        ${o.status === 'processing' ? `<button class="btn-sm deliver" onclick="deliverOrder('${o.id}')"><i class="fas fa-check"></i></button>` : ''}
+                                        <button class="btn-sm delete" onclick="deleteOrder('${o.id}')"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+
+                // Update stats with all orders
+                const revenue = allOrders.reduce((sum, o) => sum + o.total, 0);
+                totalRevenueEl.textContent = `$${revenue.toFixed(2)}`;
+                const pending = allOrders.filter(o => o.status === 'processing').length;
+                pendingOrdersEl.textContent = pending;
+                totalOrdersEl.textContent = allOrders.length;
+            });
         }
 
         function updateAdminStats() {
             totalProductsEl.textContent = products.length;
-            totalOrdersEl.textContent = orders.length;
-            const revenue = orders.reduce((sum, o) => sum + o.total, 0);
-            totalRevenueEl.textContent = `$${revenue.toFixed(2)}`;
-            const pending = orders.filter(o => o.status === 'processing').length;
-            pendingOrdersEl.textContent = pending;
+            // Orders stats are updated in renderAdminOrders
         }
 
         // ============================================================
@@ -2032,9 +2078,10 @@
         }
 
         async function deliverOrder(id) {
-            const order = orders.find(o => o.id === id);
-            if (!order) return;
-            const items = Array.from({ length: order.quantity }, (_, i) =>
+            const order = await db.collection('orders').doc(id).get();
+            if (!order.exists) return;
+            const orderData = order.data();
+            const items = Array.from({ length: orderData.quantity || 1 }, (_, i) =>
                 `user${Date.now().toString(36)}:pass${Math.random().toString(36).substring(2, 8)}`
             );
             await db.collection('orders').doc(id).update({
@@ -2093,14 +2140,13 @@
                 }
             }
         }
-        setTimeout(createDefaultAdmin, 1000);
+        setTimeout(createDefaultAdmin, 2000);
 
-        console.log('🚀 HubX Store - Full Merged System');
+        console.log('🚀 HubX Store - Fully Fixed System');
         console.log('🔐 Authentication with Firebase');
-        console.log('📦 Products from screenshots');
-        console.log('💵 Multi-currency: USD, PKR, INR');
         console.log('👑 Admin: admin@hubx.com / admin123');
         console.log('🔄 Switch between User/Admin panels');
+        console.log('✅ Products now stable - no flickering');
     </script>
 
 </body>
