@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HubX Store - Admin Panel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        /* Same styles as user panel + admin extras */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --primary: #0a1628;
+            --secondary: #1a2b4a;
+            --accent: #4f8cff;
+            --accent-hover: #3a75e6;
+            --success: #00c853;
+            --danger: #ff1744;
+            --warning: #ff9100;
+            --bg: #f0f4ff;
+            --card: #ffffff;
+            --shadow: 0 20px 60px rgba(0, 20, 50, 0.08);
+            --radius: 24px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--primary);
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: var(--primary);
+            padding: 14px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+        .navbar .logo {
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .navbar .logo span {
+            color: var(--accent);
+        }
+        .navbar .logo i {
+            color: var(--accent);
+        }
+        .navbar .nav-links {
+            display: flex;
+            gap: 18px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .navbar .nav-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+        .navbar .nav-links a:hover {
+            color: white;
+        }
+        .navbar .nav-links .btn-nav {
+            background: var(--accent);
+            color: white !important;
+            padding: 6px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+        }
+        .navbar .status-badge {
+            padding: 4px 16px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .status-badge.online {
+            background: rgba(0, 200, 83, 0.15);
+            color: #2e7d32;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        .admin-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+        @media (max-width: 768px) {
+            .admin-grid {
+                grid-template-columns: 1fr;
+            }
+            .navbar {
+                padding: 12px 16px;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            .navbar .nav-links {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        .admin-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 28px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+        .admin-card:hover {
+            box-shadow: 0 30px 80px rgba(0, 20, 50, 0.12);
+        }
+        .admin-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .admin-card h3 i {
+            color: var(--accent);
+        }
+        .stat-row {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .stat-box {
+            flex: 1;
+            min-width: 120px;
+            background: #f8faff;
+            padding: 16px;
+            border-radius: 16px;
+            text-align: center;
+        }
+        .stat-box .num {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        .stat-box .label {
+            font-size: 0.8rem;
+            color: #888;
+        }
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+        .admin-table th {
+            text-align: left;
+            padding: 8px 6px;
+            background: #f8faff;
+            font-weight: 600;
+        }
+        .admin-table td {
+            padding: 8px 6px;
+            border-bottom: 1px solid #f0f4ff;
+        }
+        .badge-status {
+            padding: 3px 12px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .badge-status.delivered {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        .badge-status.processing {
+            background: #fff3e0;
+            color: #e65100;
+        }
+        .btn-sm {
+            padding: 4px 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-sm:hover {
+            transform: scale(1.05);
+        }
+        .btn-sm.deliver {
+            background: var(--success);
+            color: white;
+        }
+        .btn-sm.delete {
+            background: var(--danger);
+            color: white;
+        }
+        .btn-sm.edit {
+            background: var(--warning);
+            color: white;
+        }
+        .form-group {
+            margin-bottom: 12px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            font-size: 0.8rem;
+            margin-bottom: 4px;
+            color: #555;
+        }
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid #e0e7f0;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-family: 'Inter', sans-serif;
+            transition: var(--transition);
+        }
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(79, 140, 255, 0.1);
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+        .btn-primary {
+            padding: 10px 28px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-primary:hover {
+            background: var(--accent-hover);
+        }
+        .btn-danger {
+            padding: 10px 28px;
+            background: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-danger:hover {
+            background: #d50000;
+        }
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .toast {
+            padding: 14px 24px;
+            border-radius: 14px;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            animation: slideIn 0.4s ease forwards;
+            max-width: 400px;
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        .toast.success {
+            background: var(--success);
+        }
+        .toast.error {
+            background: var(--danger);
+        }
+        .toast.warning {
+            background: var(--warning);
+        }
+        .product-item-admin {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f4ff;
+            transition: var(--transition);
+        }
+        .product-item-admin:hover {
+            background: #f8faff;
+            padding-left: 8px;
+            border-radius: 8px;
+        }
+        .product-item-admin .product-actions {
+            display: flex;
+            gap: 6px;
+        }
+        .scrollable {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .scrollable::-webkit-scrollbar {
+            width: 4px;
+        }
+        .scrollable::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 10px;
+        }
+
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
+            transition: opacity 0.5s ease;
+        }
+        .login-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .login-box {
+            background: white;
+            border-radius: var(--radius);
+            padding: 40px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.3);
+        }
+        .login-box h2 {
+            font-size: 1.5rem;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .login-box h2 i {
+            color: var(--accent);
+        }
+        .login-box .sub {
+            color: #888;
+            margin-bottom: 20px;
+        }
+        .login-box input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e7f0;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            margin-bottom: 12px;
+            transition: var(--transition);
+        }
+        .login-box input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        .login-box .btn-login {
+            width: 100%;
+            padding: 12px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .login-box .btn-login:hover {
+            background: var(--accent-hover);
+        }
+        .login-box .error {
+            color: var(--danger);
+            font-size: 0.85rem;
+            margin-top: 8px;
+            display: none;
+        }
+        .api-sync-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+        }
+        .api-sync-status .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        .api-sync-status .dot.green {
+            background: var(--success);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Login Overlay -->
+    <div class="login-overlay" id="loginOverlay">
+        <div class="login-box">
+            <h2><i class="fas fa-user-shield"></i> Admin Login</h2>
+            <p class="sub">Enter your credentials to access the admin panel.</p>
+            <input type="email" id="loginEmail" placeholder="Email" value="admin@hubx.com" />
+            <input type="password" id="loginPassword" placeholder="Password" value="admin123" />
+            <button class="btn-login" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Login</button>
+            <div class="error" id="loginError">Invalid credentials. Please try again.</div>
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fas fa-user-cog"></i>
+            Hub<span>X</span> Admin
+        </div>
+        <div class="nav-links">
+            <span class="status-badge online"><i class="fas fa-circle"></i> Live</span>
+            <span class="api-sync-status"><span class="dot green"></span> Connected</span>
+            <a href="#dashboard">Dashboard</a>
+            <a href="#products">Products</a>
+            <a href="#orders">Orders</a>
+            <a href="index.html" class="btn-nav"><i class="fas fa-store"></i> Store</a>
+            <a href="#" id="logoutBtn" style="color:var(--danger);"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1 style="font-size:2rem;font-weight:700;margin-bottom:24px;">
+            <i class="fas fa-chart-pie" style="color:var(--accent);"></i> Dashboard
+        </h1>
+
+        <!-- Stats -->
+        <div class="admin-card" style="margin-bottom:24px;" id="dashboard">
+            <h3><i class="fas fa-chart-line"></i> Overview</h3>
+            <div class="stat-row">
+                <div class="stat-box"><div class="num" id="totalProducts">0</div><div class="label">Total Products</div></div>
+                <div class="stat-box"><div class="num" id="totalOrders">0</div><div class="label">Total Orders</div></div>
+                <div class="stat-box"><div class="num" id="totalRevenue">$0.00</div><div class="label">Revenue</div></div>
+                <div class="stat-box"><div class="num" id="pendingOrders">0</div><div class="label">Pending Orders</div></div>
+            </div>
+        </div>
+
+        <!-- Admin Grid -->
+        <div class="admin-grid">
+
+            <div class="admin-card" id="products">
+                <h3><i class="fas fa-boxes"></i> Manage Products</h3>
+                <div style="margin-bottom:16px;">
+                    <div class="form-group">
+                        <label>Product Name</label>
+                        <input type="text" id="productName" placeholder="e.g., Google AI Pro (18m)" />
+                    </div>
+                    <div class="form-group">
+                        <label>Slug</label>
+                        <input type="text" id="productSlug" placeholder="e.g., google-ai-pro-18m" />
+                    </div>
+                    <div class="form-group">
+                        <label>Price (USDT)</label>
+                        <input type="number" id="productPrice" placeholder="1.00" step="0.01" />
+                    </div>
+                    <div class="form-group">
+                        <label>Stock</label>
+                        <input type="number" id="productStock" placeholder="919" />
+                    </div>
+                    <div class="form-group">
+                        <label>Icon (Font Awesome)</label>
+                        <input type="text" id="productIcon" placeholder="fa-robot" value="fa-cube" />
+                    </div>
+                    <div class="form-group">
+                        <label>Details (one per line)</label>
+                        <textarea id="productDetails" placeholder="18 Months Plan&#10;5TB cloud storage included"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Note</label>
+                        <input type="text" id="productNote" placeholder="Redeem link must be used within 24 hours." />
+                    </div>
+                    <button class="btn-primary" id="addProductBtn"><i class="fas fa-plus"></i> Add Product</button>
+                    <button class="btn-sm edit" id="cancelEditBtn" style="display:none;margin-left:8px;"><i class="fas fa-times"></i> Cancel</button>
+                </div>
+                <hr style="margin:16px 0;border-color:#eee;" />
+                <div class="scrollable" id="productListAdmin"></div>
+            </div>
+
+            <div class="admin-card" id="orders">
+                <h3><i class="fas fa-shopping-cart"></i> Manage Orders</h3>
+                <div class="scrollable" id="orderListAdmin"></div>
+            </div>
+
+        </div>
+
+        <div class="admin-card" style="margin-top:24px;border:2px solid var(--danger);">
+            <h3 style="color:var(--danger);"><i class="fas fa-exclamation-triangle"></i> Danger Zone</h3>
+            <div style="display:flex;gap:16px;flex-wrap:wrap;">
+                <button class="btn-danger" id="resetAllBtn"><i class="fas fa-trash"></i> Reset All Data</button>
+                <span style="font-size:0.85rem;color:#888;display:flex;align-items:center;">⚠️ This will delete all products, orders, and balances.</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js">
+    </script>
+
+    <script>
+        // ============================================================
+        // FIREBASE CONFIG - SAME AS USER PANEL
+        // ============================================================
+        const firebaseConfig = {
+  apiKey: "AIzaSyDh5Q95QuIx-e8jDcGNrDyaIG71oXR14I4",
+  authDomain: "movieflex-9f298.firebaseapp.com",
+  projectId: "movieflex-9f298",
+  storageBucket: "movieflex-9f298.firebasestorage.app",
+  messagingSenderId: "767953927236",
+  appId: "1:767953927236:web:eb9269cb0e79fcace85011"
+};
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        // ============================================================
+        // STATE
+        // ============================================================
+        let products = [];
+        let orders = [];
+        let editingProductId = null;
+
+        // ============================================================
+        // DOM REFS
+        // ============================================================
+        const loginOverlay = document.getElementById('loginOverlay');
+        const loginEmail = document.getElementById('loginEmail');
+        const loginPassword = document.getElementById('loginPassword');
+        const loginBtn = document.getElementById('loginBtn');
+        const loginError = document.getElementById('loginError');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        const productList = document.getElementById('productListAdmin');
+        const orderList = document.getElementById('orderListAdmin');
+        const totalProductsEl = document.getElementById('totalProducts');
+        const totalOrdersEl = document.getElementById('totalOrders');
+        const totalRevenueEl = document.getElementById('totalRevenue');
+        const pendingOrdersEl = document.getElementById('pendingOrders');
+
+        const productName = document.getElementById('productName');
+        const productSlug = document.getElementById('productSlug');
+        const productPrice = document.getElementById('productPrice');
+        const productStock = document.getElementById('productStock');
+        const productIcon = document.getElementById('productIcon');
+        const productDetails = document.getElementById('productDetails');
+        const productNote = document.getElementById('productNote');
+        const addBtn = document.getElementById('addProductBtn');
+        const cancelEditBtn = document.getElementById('cancelEditBtn');
+        const resetBtn = document.getElementById('resetAllBtn');
+
+        // ============================================================
+        // TOAST
+        // ============================================================
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 4000);
+        }
+
+        // ============================================================
+        // AUTH
+        // ============================================================
+        function checkAuth() {
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    loginOverlay.classList.add('hidden');
+                    loadData();
+                } else {
+                    loginOverlay.classList.remove('hidden');
+                }
+            });
+        }
+
+        loginBtn.addEventListener('click', async () => {
+            const email = loginEmail.value.trim();
+            const password = loginPassword.value.trim();
+            if (!email || !password) {
+                loginError.style.display = 'block';
+                loginError.textContent = 'Please enter email and password.';
+                return;
+            }
+            try {
+                await auth.signInWithEmailAndPassword(email, password);
+                loginError.style.display = 'none';
+                showToast('✅ Logged in!', 'success');
+            } catch (error) {
+                loginError.style.display = 'block';
+                loginError.textContent = 'Invalid credentials.';
+            }
+        });
+
+        logoutBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            await auth.signOut();
+            showToast('Logged out.', 'warning');
+        });
+
+        loginPassword.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') loginBtn.click();
+        });
+
+        // ============================================================
+        // FIREBASE LISTENERS
+        // ============================================================
+
+        function listenProducts() {
+            db.collection('products').orderBy('createdAt', 'desc').onSnapshot((snapshot) => {
+                products = [];
+                snapshot.forEach((doc) => {
+                    products.push({ id: doc.id, ...doc.data() });
+                });
+                renderProducts();
+                updateStats();
+            });
+        }
+
+        function listenOrders() {
+            db.collection('orders').orderBy('createdAt', 'desc').onSnapshot((snapshot) => {
+                orders = [];
+                snapshot.forEach((doc) => {
+                    orders.push({ id: doc.id, ...doc.data() });
+                });
+                renderOrders();
+                updateStats();
+            });
+        }
+
+        // ============================================================
+        // RENDER
+        // ============================================================
+
+        function renderProducts() {
+            if (!products.length) {
+                productList.innerHTML =
+                    `<div style="color:#888;padding:20px 0;text-align:center;"><i class="fas fa-box-open" style="font-size:2rem;display:block;margin-bottom:8px;"></i>No products.</div>`;
+                return;
+            }
+            productList.innerHTML = products.map(p => `
+                <div class="product-item-admin">
+                    <div>
+                        <strong>${p.name}</strong>
+                        <span style="font-size:0.75rem;color:#888;margin-left:8px;">${p.slug}</span>
+                        <span style="font-size:0.75rem;color:#888;margin-left:8px;">$${p.price.toFixed(2)}</span>
+                        <span style="font-size:0.75rem;color:#888;margin-left:8px;">Stock: ${p.stock}</span>
+                    </div>
+                    <div class="product-actions">
+                        <button class="btn-sm edit" onclick="editProduct('${p.id}')"><i class="fas fa-edit"></i></button>
+                        <button class="btn-sm delete" onclick="deleteProduct('${p.id}')"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderOrders() {
+            if (!orders.length) {
+                orderList.innerHTML =
+                    `<div style="color:#888;padding:20px 0;text-align:center;"><i class="fas fa-inbox" style="font-size:2rem;display:block;margin-bottom:8px;"></i>No orders.</div>`;
+                return;
+            }
+            orderList.innerHTML = `
+                <table class="admin-table">
+                    <thead><tr><th>Order</th><th>Product</th><th>Qty</th><th>Total</th><th>Status</th><th>Actions</th></tr></thead>
+                    <tbody>
+                        ${orders.map(o => `
+                            <tr>
+                                <td><span style="font-size:0.7rem;font-family:monospace;">${o.id.slice(0, 8)}</span></td>
+                                <td>${o.product_name}</td>
+                                <td>${o.quantity}</td>
+                                <td>$${o.total.toFixed(2)}</td>
+                                <td><span class="badge-status ${o.status}">${o.status === 'delivered' ? '✅ Delivered' : '⏳ Processing'}</span></td>
+                                <td>
+                                    ${o.status === 'processing' ? `<button class="btn-sm deliver" onclick="deliverOrder('${o.id}')"><i class="fas fa-check"></i></button>` : ''}
+                                    <button class="btn-sm delete" onclick="deleteOrder('${o.id}')"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function updateStats() {
+            totalProductsEl.textContent = products.length;
+            totalOrdersEl.textContent = orders.length;
+            const revenue = orders.reduce((sum, o) => sum + o.total, 0);
+            totalRevenueEl.textContent = `$${revenue.toFixed(2)}`;
+            const pending = orders.filter(o => o.status === 'processing').length;
+            pendingOrdersEl.textContent = pending;
+        }
+
+        // ============================================================
+        // ADMIN ACTIONS
+        // ============================================================
+
+        async function addProduct() {
+            const name = productName.value.trim();
+            const slug = productSlug.value.trim();
+            const price = parseFloat(productPrice.value);
+            const stock = parseInt(productStock.value);
+            const icon = productIcon.value.trim() || 'fa-cube';
+            const details = productDetails.value.trim();
+            const note = productNote.value.trim();
+
+            if (!name || !slug || isNaN(price) || isNaN(stock)) {
+                showToast('Please fill all fields.', 'error');
+                return;
+            }
+
+            try {
+                if (editingProductId) {
+                    await db.collection('products').doc(editingProductId).update({
+                        name,
+                        slug,
+                        price,
+                        stock,
+                        icon,
+                        details,
+                        note,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    showToast(`✅ Product updated!`, 'success');
+                    editingProductId = null;
+                    cancelEditBtn.style.display = 'none';
+                    addBtn.innerHTML = '<i class="fas fa-plus"></i> Add Product';
+                } else {
+                    await db.collection('products').add({
+                        name,
+                        slug,
+                        price,
+                        stock,
+                        icon,
+                        details,
+                        note,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    showToast(`✅ Product added!`, 'success');
+                }
+                productName.value = '';
+                productSlug.value = '';
+                productPrice.value = '';
+                productStock.value = '';
+                productIcon.value = 'fa-cube';
+                productDetails.value = '';
+                productNote.value = '';
+            } catch (error) {
+                showToast('Failed to save product.', 'error');
+            }
+        }
+
+        function editProduct(id) {
+            const product = products.find(p => p.id === id);
+            if (!product) return;
+            editingProductId = id;
+            productName.value = product.name;
+            productSlug.value = product.slug;
+            productPrice.value = product.price;
+            productStock.value = product.stock;
+            productIcon.value = product.icon || 'fa-cube';
+            productDetails.value = product.details || '';
+            productNote.value = product.note || '';
+            cancelEditBtn.style.display = 'inline-block';
+            addBtn.innerHTML = '<i class="fas fa-save"></i> Update Product';
+        }
+
+        cancelEditBtn.addEventListener('click', () => {
+            editingProductId = null;
+            cancelEditBtn.style.display = 'none';
+            addBtn.innerHTML = '<i class="fas fa-plus"></i> Add Product';
+            productName.value = '';
+            productSlug.value = '';
+            productPrice.value = '';
+            productStock.value = '';
+            productIcon.value = 'fa-cube';
+            productDetails.value = '';
+            productNote.value = '';
+        });
+
+        async function deleteProduct(id) {
+            if (!confirm('Delete this product?')) return;
+            await db.collection('products').doc(id).delete();
+            showToast('Product deleted.', 'warning');
+        }
+
+        async function deliverOrder(id) {
+            const order = orders.find(o => o.id === id);
+            if (!order) return;
+            const items = Array.from({ length: order.quantity }, (_, i) =>
+                `user${Date.now().toString(36)}:pass${Math.random().toString(36).substring(2, 8)}`
+            );
+            await db.collection('orders').doc(id).update({
+                status: 'delivered',
+                items: items,
+                deliveredAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            showToast('✅ Order delivered!', 'success');
+        }
+
+        async function deleteOrder(id) {
+            if (!confirm('Delete this order?')) return;
+            await db.collection('orders').doc(id).delete();
+            showToast('Order deleted.', 'warning');
+        }
+
+        async function resetAll() {
+            if (!confirm('⚠️ Delete ALL data?')) return;
+            if (!confirm('Last chance!')) return;
+            const productsSnapshot = await db.collection('products').get();
+            await Promise.all(productsSnapshot.docs.map(doc => doc.ref.delete()));
+            const ordersSnapshot = await db.collection('orders').get();
+            await Promise.all(ordersSnapshot.docs.map(doc => doc.ref.delete()));
+            const usersSnapshot = await db.collection('users').get();
+            await Promise.all(usersSnapshot.docs.map(doc => doc.ref.update({ balance: 0 })));
+            showToast('All data reset.', 'warning');
+        }
+
+        // ============================================================
+        // EVENT LISTENERS
+        // ============================================================
+
+        addBtn.addEventListener('click', addProduct);
+        resetBtn.addEventListener('click', resetAll);
+
+        // ============================================================
+        // LOAD DATA
+        // ============================================================
+
+        function loadData() {
+            listenProducts();
+            listenOrders();
+        }
+
+        // ============================================================
+        // INIT
+        // ============================================================
+
+        checkAuth();
+
+        async function createDefaultAdmin() {
+            try {
+                await auth.createUserWithEmailAndPassword('admin@hubx.com', 'admin123');
+            } catch (error) {
+                if (error.code !== 'auth/email-already-in-use') {}
+            }
+        }
+        setTimeout(createDefaultAdmin, 1000);
+
+        console.log('🚀 HubX Admin Panel - Full Secure');
+        console.log('🔑 Default: admin@hubx.com / admin123');
+    </script>
+
+</body>
+</html>

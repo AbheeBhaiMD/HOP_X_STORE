@@ -1,0 +1,1574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HubX Store - Premium Digital Products</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        /* ===== COMPLETE STYLES ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --primary: #0a1628;
+            --secondary: #1a2b4a;
+            --accent: #4f8cff;
+            --accent-hover: #3a75e6;
+            --success: #00c853;
+            --danger: #ff1744;
+            --warning: #ff9100;
+            --bg: #f0f4ff;
+            --card: #ffffff;
+            --shadow: 0 20px 60px rgba(0, 20, 50, 0.08);
+            --radius: 24px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--primary);
+            min-height: 100vh;
+        }
+
+        /* ===== LOADER ===== */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999999;
+            transition: opacity 0.5s ease;
+        }
+        .loader.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .loader .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ===== AUTH OVERLAY ===== */
+        .auth-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
+            transition: opacity 0.5s ease;
+        }
+        .auth-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .auth-box {
+            background: white;
+            border-radius: var(--radius);
+            padding: 40px;
+            max-width: 420px;
+            width: 92%;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.4s ease;
+        }
+        .auth-box .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 4px;
+        }
+        .auth-box .logo span {
+            color: var(--accent);
+        }
+        .auth-box .sub {
+            text-align: center;
+            color: #888;
+            margin-bottom: 24px;
+            font-size: 0.95rem;
+        }
+        .auth-box .form-group {
+            margin-bottom: 14px;
+        }
+        .auth-box .form-group label {
+            display: block;
+            font-weight: 500;
+            font-size: 0.85rem;
+            margin-bottom: 4px;
+            color: #555;
+        }
+        .auth-box .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e7f0;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            transition: var(--transition);
+        }
+        .auth-box .form-group input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(79, 140, 255, 0.1);
+        }
+        .auth-box .btn-auth {
+            width: 100%;
+            padding: 14px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .auth-box .btn-auth:hover {
+            background: var(--accent-hover);
+            transform: scale(1.02);
+        }
+        .auth-box .switch-auth {
+            text-align: center;
+            margin-top: 16px;
+            color: #888;
+            font-size: 0.9rem;
+        }
+        .auth-box .switch-auth a {
+            color: var(--accent);
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .auth-box .switch-auth a:hover {
+            text-decoration: underline;
+        }
+        .auth-box .error-msg {
+            color: var(--danger);
+            font-size: 0.85rem;
+            margin-top: 8px;
+            display: none;
+            text-align: center;
+        }
+        .auth-box .success-msg {
+            color: var(--success);
+            font-size: 0.85rem;
+            margin-top: 8px;
+            display: none;
+            text-align: center;
+        }
+        .auth-box .password-hint {
+            font-size: 0.75rem;
+            color: #888;
+            margin-top: 4px;
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            background: var(--primary);
+            padding: 14px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+        .navbar .logo {
+            color: white;
+            font-size: 1.4rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .navbar .logo span {
+            color: var(--accent);
+        }
+        .navbar .logo i {
+            color: var(--accent);
+        }
+        .navbar .nav-links {
+            display: flex;
+            gap: 18px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .navbar .nav-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+        .navbar .nav-links a:hover {
+            color: white;
+        }
+        .navbar .balance-badge {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 6px 16px;
+            border-radius: 50px;
+            color: var(--accent);
+            font-weight: 600;
+            border: 1px solid rgba(79, 140, 255, 0.2);
+            font-size: 0.9rem;
+        }
+        .navbar .currency-select {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 6px 12px;
+            border-radius: 50px;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        .navbar .currency-select option {
+            background: var(--primary);
+            color: white;
+        }
+        .navbar .user-email {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.8rem;
+        }
+        .navbar .logout-btn {
+            background: rgba(255, 23, 68, 0.15);
+            color: var(--danger);
+            padding: 6px 16px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 23, 68, 0.2);
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            font-size: 0.8rem;
+        }
+        .navbar .logout-btn:hover {
+            background: rgba(255, 23, 68, 0.25);
+        }
+
+        /* ===== CONTAINER ===== */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: var(--radius);
+            padding: 50px 40px;
+            color: white;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(79, 140, 255, 0.12) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: pulse 6s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            position: relative;
+        }
+        .hero h1 .highlight {
+            background: linear-gradient(135deg, var(--accent), var(--success));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero p {
+            font-size: 1.05rem;
+            opacity: 0.8;
+            max-width: 500px;
+            position: relative;
+        }
+        .hero .stats {
+            display: flex;
+            gap: 40px;
+            margin-top: 25px;
+            position: relative;
+            flex-wrap: wrap;
+        }
+        .hero .stats .num {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .hero .stats .label {
+            font-size: 0.8rem;
+            opacity: 0.6;
+        }
+
+        /* ===== SECTION TITLE ===== */
+        .section-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .section-title i {
+            color: var(--accent);
+        }
+        .section-title .badge-count {
+            font-size: 0.8rem;
+            font-weight: 400;
+            color: #888;
+            margin-left: auto;
+        }
+
+        /* ===== PRODUCTS GRID ===== */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+        .product-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 30px 80px rgba(0, 20, 50, 0.15);
+        }
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--success));
+            opacity: 0;
+            transition: var(--transition);
+        }
+        .product-card:hover::before {
+            opacity: 1;
+        }
+        .product-card .badge-stock {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .badge-stock.in-stock {
+            background: rgba(0, 200, 83, 0.15);
+            color: #2e7d32;
+        }
+        .badge-stock.low-stock {
+            background: rgba(255, 145, 0, 0.15);
+            color: #e65100;
+        }
+        .badge-stock.out-stock {
+            background: rgba(255, 23, 68, 0.15);
+            color: #c62828;
+        }
+        .product-card .icon {
+            font-size: 2.5rem;
+            color: var(--accent);
+            margin-bottom: 10px;
+            background: rgba(79, 140, 255, 0.08);
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            transition: var(--transition);
+        }
+        .product-card:hover .icon {
+            transform: scale(1.1) rotate(-5deg);
+        }
+        .product-card h3 {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .product-card .slug {
+            font-size: 0.75rem;
+            color: #888;
+            margin-bottom: 10px;
+            font-family: monospace;
+        }
+        .product-card .price {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .product-card .price small {
+            font-size: 0.8rem;
+            font-weight: 400;
+            color: #888;
+        }
+        .product-card .btn-order {
+            width: 100%;
+            padding: 12px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .product-card .btn-order:hover {
+            background: var(--accent-hover);
+            transform: scale(1.02);
+        }
+        .product-card .btn-order:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* ===== DEPOSIT ===== */
+        .deposit-section {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 35px;
+            box-shadow: var(--shadow);
+            margin-bottom: 40px;
+        }
+        .deposit-section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 6px;
+        }
+        .deposit-section .sub {
+            color: #888;
+            margin-bottom: 20px;
+        }
+        .deposit-box {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .deposit-box input {
+            flex: 1;
+            min-width: 180px;
+            padding: 12px 18px;
+            border: 2px solid #e0e7f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            transition: var(--transition);
+        }
+        .deposit-box input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(79, 140, 255, 0.1);
+        }
+        .deposit-box .btn-deposit {
+            padding: 12px 35px;
+            background: var(--success);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .deposit-box .btn-deposit:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 30px rgba(0, 200, 83, 0.3);
+        }
+
+        /* ===== ORDERS ===== */
+        .order-item {
+            background: white;
+            border-radius: 16px;
+            padding: 18px 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            border-left: 4px solid var(--success);
+            transition: var(--transition);
+            margin-bottom: 12px;
+        }
+        .order-item:hover {
+            transform: translateX(4px);
+        }
+        .order-item .order-status {
+            padding: 4px 14px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .order-status.delivered {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        .order-status.processing {
+            background: #fff3e0;
+            color: #e65100;
+        }
+        .order-item .order-items {
+            font-size: 0.7rem;
+            color: #888;
+            font-family: monospace;
+            width: 100%;
+            margin-top: 6px;
+            padding: 6px 12px;
+            background: #f8faff;
+            border-radius: 8px;
+        }
+
+        /* ===== PRODUCT DETAIL MODAL ===== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9998;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal {
+            background: white;
+            border-radius: var(--radius);
+            padding: 35px;
+            max-width: 540px;
+            width: 92%;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+        }
+        .modal::-webkit-scrollbar {
+            width: 4px;
+        }
+        .modal::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 10px;
+        }
+        @keyframes slideUp {
+            from {
+                transform: translateY(40px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        .modal h3 {
+            font-size: 1.3rem;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .modal .modal-price {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 8px 0;
+        }
+        .modal .modal-stock {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        .modal .modal-details {
+            background: #f8faff;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 12px 0;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        .modal .modal-details ul {
+            list-style: none;
+            padding: 0;
+        }
+        .modal .modal-details ul li {
+            padding: 4px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+        .modal .modal-details ul li i {
+            color: var(--success);
+            width: 18px;
+            margin-top: 3px;
+        }
+        .modal .modal-details ul li .bullet {
+            color: var(--accent);
+            font-weight: 700;
+        }
+        .modal .modal-note {
+            background: #fff8e1;
+            border-radius: 12px;
+            padding: 14px;
+            font-size: 0.85rem;
+            color: #795548;
+            margin: 12px 0;
+            border-left: 3px solid var(--warning);
+        }
+        .modal .btn-confirm {
+            width: 100%;
+            padding: 14px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .modal .btn-confirm:hover {
+            background: var(--accent-hover);
+        }
+        .modal .btn-confirm:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .modal .btn-close {
+            width: 100%;
+            padding: 10px;
+            background: transparent;
+            color: #888;
+            border: none;
+            margin-top: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+        .modal .btn-close:hover {
+            color: var(--primary);
+        }
+
+        /* ===== TOAST ===== */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .toast {
+            padding: 14px 24px;
+            border-radius: 14px;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            animation: slideIn 0.4s ease forwards;
+            max-width: 400px;
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        .toast.success {
+            background: var(--success);
+        }
+        .toast.error {
+            background: var(--danger);
+        }
+        .toast.warning {
+            background: var(--warning);
+        }
+
+        /* ===== EMPTY STATE ===== */
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            background: white;
+            border-radius: var(--radius);
+        }
+        .empty-state i {
+            font-size: 3rem;
+            color: #ddd;
+            display: block;
+            margin-bottom: 12px;
+        }
+        .empty-state p {
+            color: #888;
+        }
+
+        /* ===== ADMIN LINK ===== */
+        .admin-link {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 500;
+            opacity: 0.3;
+            transition: var(--transition);
+            z-index: 100;
+        }
+        .admin-link:hover {
+            opacity: 1;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 12px 16px;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            .navbar .nav-links {
+                gap: 10px;
+                width: 100%;
+                justify-content: center;
+            }
+            .hero {
+                padding: 25px 20px;
+            }
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            .hero .stats {
+                gap: 15px;
+            }
+            .deposit-box {
+                flex-direction: column;
+            }
+            .deposit-box input {
+                width: 100%;
+            }
+            .deposit-box .btn-deposit {
+                width: 100%;
+            }
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+            .modal {
+                padding: 24px;
+            }
+            .auth-box {
+                padding: 28px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Loader -->
+    <div class="loader" id="loader">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Auth Overlay (Signup/Login) -->
+    <div class="auth-overlay" id="authOverlay">
+        <div class="auth-box">
+            <div class="logo">Hub<span>X</span> Store</div>
+            <p class="sub" id="authSub">Sign in to access your account</p>
+
+            <div id="authForm">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="authEmail" placeholder="you@example.com" />
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="authPassword" placeholder="••••••••" />
+                    <div class="password-hint" id="passwordHint">Password must be at least 6 characters</div>
+                </div>
+                <div class="form-group" id="nameGroup" style="display:none;">
+                    <label>Full Name</label>
+                    <input type="text" id="authName" placeholder="John Doe" />
+                </div>
+                <button class="btn-auth" id="authBtn">Sign In</button>
+                <div class="error-msg" id="authError"></div>
+                <div class="success-msg" id="authSuccess"></div>
+                <div class="switch-auth">
+                    <span id="switchText">Don't have an account?</span>
+                    <a id="switchLink">Sign Up</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar" id="mainNav" style="display:none;">
+        <div class="logo">
+            <i class="fas fa-store"></i>
+            Hub<span>X</span> Store
+        </div>
+        <div class="nav-links">
+            <a href="#products">Products</a>
+            <a href="#deposit">Deposit</a>
+            <a href="#orders">Orders</a>
+            <select class="currency-select" id="currencySelect">
+                <option value="usd">$ USD</option>
+                <option value="pkr">₨ PKR</option>
+                <option value="inr">₹ INR</option>
+            </select>
+            <span class="balance-badge">
+                <i class="fas fa-wallet"></i>
+                <span id="userBalance">0.00</span>
+            </span>
+            <span class="user-email" id="userEmailDisplay">user@email.com</span>
+            <button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            <a href="admin.html" style="background:var(--accent);color:white;padding:6px 18px;border-radius:50px;font-weight:600;font-size:0.85rem;">
+                <i class="fas fa-user-shield"></i> Admin
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div id="mainContent" style="display:none;">
+
+        <!-- Hero -->
+        <section class="container">
+            <div class="hero">
+                <h1>Premium <span class="highlight">Digital Products</span></h1>
+                <p>Get the best deals on software subscriptions, VPNs, and more. Instant delivery after payment.</p>
+                <div class="stats">
+                    <div><div class="num" id="totalUsers">4,492+</div><div class="label">Monthly Users</div></div>
+                    <div><div class="num" id="totalProductsHero">0</div><div class="label">Products</div></div>
+                    <div><div class="num">24/7</div><div class="label">Support</div></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Products -->
+        <section class="container" id="products">
+            <div class="section-title">
+                <i class="fas fa-cubes"></i> Available Products
+                <span class="badge-count" id="productCount">Loading...</span>
+            </div>
+            <div class="products-grid" id="productsGrid">
+                <div style="text-align:center;padding:40px;grid-column:1/-1;color:#888;">
+                    <i class="fas fa-spinner fa-spin" style="font-size:2rem;"></i>
+                    <p>Loading products...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Deposit -->
+        <section class="container" id="deposit">
+            <div class="deposit-section">
+                <h2><i class="fas fa-plus-circle" style="color:var(--success);"></i> Deposit Funds</h2>
+                <p class="sub">Add balance to your wallet to place orders instantly.</p>
+                <div class="deposit-box">
+                    <input type="number" id="depositAmount" placeholder="Enter amount in USDT" min="1" step="0.5" />
+                    <button class="btn-deposit" id="depositBtn">
+                        <i class="fas fa-arrow-right"></i> Deposit Now
+                    </button>
+                </div>
+                <div style="margin-top:14px;font-size:0.85rem;color:#888;display:flex;gap:20px;flex-wrap:wrap;">
+                    <span><i class="fas fa-info-circle"></i> Min deposit: 1 USDT</span>
+                    <span><i class="fas fa-sync-alt"></i> Instant credit</span>
+                    <span><i class="fas fa-shield-alt"></i> Secure</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Orders -->
+        <section class="container" id="orders">
+            <div class="section-title">
+                <i class="fas fa-history"></i> My Orders
+                <span class="badge-count" id="orderCount">0 orders</span>
+            </div>
+            <div id="ordersList">
+                <div class="empty-state">
+                    <i class="fas fa-inbox"></i>
+                    <p>No orders yet. Start shopping!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Product Detail Modal -->
+        <div class="modal-overlay" id="productModal">
+            <div class="modal">
+                <h3 id="modalTitle"><i class="fas fa-box"></i> Product</h3>
+                <div class="modal-price" id="modalPrice">$0.00</div>
+                <span class="modal-stock" id="modalStock">In Stock</span>
+                <div class="modal-details" id="modalDetails"></div>
+                <div class="modal-note" id="modalNote">
+                    <i class="fas fa-info-circle"></i> Delivery is automatic after payment confirmation.
+                </div>
+                <button class="btn-confirm" id="modalOrderBtn"><i class="fas fa-shopping-cart"></i> Order Now</button>
+                <button class="btn-close" id="modalCloseBtn">Close</button>
+            </div>
+        </div>
+
+        <!-- Toast -->
+        <div class="toast-container" id="toastContainer"></div>
+
+        <!-- Admin Link -->
+        <a href="admin.html" class="admin-link"><i class="fas fa-user-cog"></i> Admin Panel</a>
+
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js">
+    </script>
+
+    <script>
+        // ============================================================
+        // FIREBASE CONFIG - REPLACE WITH YOUR OWN
+        // ============================================================
+        const firebaseConfig = {
+  apiKey: "AIzaSyDh5Q95QuIx-e8jDcGNrDyaIG71oXR14I4",
+  authDomain: "movieflex-9f298.firebaseapp.com",
+  projectId: "movieflex-9f298",
+  storageBucket: "movieflex-9f298.firebasestorage.app",
+  messagingSenderId: "767953927236",
+  appId: "1:767953927236:web:eb9269cb0e79fcace85011"
+};
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        // ============================================================
+        // COMPLETE PRODUCT DATA (From Screenshots)
+        // ============================================================
+        const DEFAULT_PRODUCTS = [{
+            id: 'prod_001',
+            slug: 'google-ai-pro-18m',
+            name: 'Google AI Pro (18m)',
+            price: 1.00,
+            stock: 919,
+            icon: 'fa-robot',
+            details: `18 Months Plan\n5TB cloud storage included\nYou can add 5 users\nNo Shared\n100% Private\nNO NEED ANY CARD\nNon Warranty\nWorks in any country no verification`,
+            note: 'The redeem link must be used within 24 hours of receiving the order. 100% genuine Gemini AI Pro subscription activated on your own Gmail. FULL FAMILY ACCOUNT. IT\'S NOT AN INVITE.'
+        }, {
+            id: 'prod_002',
+            slug: 'coursera-plus-12m',
+            name: 'Coursera Plus (12m)',
+            price: 3.00,
+            stock: 13,
+            icon: 'fa-graduation-cap',
+            details: `Organization Plus (Org+) account\nCertificates will be issued in your own name\nFull access to available courses\nYou can change the password anytime\nThe email address cannot be changed until the subscription expires`,
+            note: 'Log in using provided details. Change name and password after first login. Add recovery email. Connect Google/Facebook.'
+        }, {
+            id: 'prod_003',
+            slug: 'nord-vpn-3m',
+            name: 'Nord VPN (3m)',
+            price: 5.00,
+            stock: 585,
+            icon: 'fa-shield-halved',
+            details: `Premium NordVPN access for 3 months\nUp to 10 devices at once`,
+            note: 'Activation Steps: 1. Open link and click "Claim" 2. Enter email 3. Enter verification code 4. On payment page, scroll down and click "Skip"'
+        }, {
+            id: 'prod_004',
+            slug: 'lovable-unlimited-lifetime',
+            name: 'Lovable Unlimited Extension (Lifetime)',
+            price: 2.00,
+            stock: 9,
+            icon: 'fa-heart',
+            details: `Unlimited Prompt for Lovable project\nFrozen credits and unlimited prompt support\nLifetime License Key\nReady-to-use\nInstant delivery after purchase`,
+            note: 'Extension Download & Setup Guide: https://hubx-lovable.hubxdigital.workers.dev/'
+        }, {
+            id: 'prod_005',
+            slug: 'lovable-admin-panel-lifetime',
+            name: 'Lovable Extension Admin Panel (Lifetime)',
+            price: 20.00,
+            stock: 0,
+            icon: 'fa-crown',
+            details: `Custom branding support\nAPI access & integration\nUnlimited license creation\nLicense validity and expiration management\nTrial license generation\nCustom license key prefix\nCentralized license dashboard\nComplete license tracking and control`,
+            note: 'Lifetime means access remains valid until service is discontinued.'
+        }, {
+            id: 'prod_006',
+            slug: 'autodesk-admin-3y',
+            name: 'Autodesk Admin Panel (3 Years)',
+            price: 25.00,
+            stock: 3,
+            icon: 'fa-cube',
+            details: `Autodesk Edu 3000 Users Admin Panel\nAll Autodesk Apps\n3 Years\nComplete Warranty\nOn your Email\nInstant Delivery`,
+            note: 'Delivery is automatic after payment confirmation.'
+        }, {
+            id: 'prod_007',
+            slug: 'quillbot-premium-1m',
+            name: 'QuillBot Premium (1m)',
+            price: 2.00,
+            stock: 32,
+            icon: 'fa-pen-fancy',
+            details: `Duration: 1 Month\nOfficial Coupon Code\nFull Time Warranty\nValid for new account only\nNo need card`,
+            note: 'Use the code within 7 days after delivery.'
+        }, {
+            id: 'prod_008',
+            slug: 'notion-business-1y',
+            name: 'Notion Business (1 Year)',
+            price: 14.00,
+            stock: 2,
+            icon: 'fa-file-alt',
+            details: `Instant Coupon Delivery\nCoupon Redeem Warranty Only`,
+            note: 'Delivery is automatic after payment confirmation.'
+        }, {
+            id: 'prod_009',
+            slug: 'canva-pro-3y',
+            name: 'Canva Pro Single Invite (FW) (3 Years)',
+            price: 1.00,
+            stock: 6,
+            icon: 'fa-paint-brush',
+            details: `Instant Activation done by our Team\n1 Year Warranty\nInstant Payment Verification`,
+            note: 'Delivery is automatic after payment confirmation.'
+        }];
+
+        // ============================================================
+        // STATE
+        // ============================================================
+        let products = [];
+        let orders = [];
+        let userBalance = 0;
+        let userEmail = '';
+        let selectedCurrency = 'usd';
+        let selectedProduct = null;
+        let isSignup = false;
+
+        const CURRENCY_RATES = { usd: 1, pkr: 278, inr: 83 };
+        const CURRENCY_SYMBOLS = { usd: '$', pkr: '₨', inr: '₹' };
+
+        // ============================================================
+        // DOM REFS
+        // ============================================================
+        const loader = document.getElementById('loader');
+        const authOverlay = document.getElementById('authOverlay');
+        const mainNav = document.getElementById('mainNav');
+        const mainContent = document.getElementById('mainContent');
+
+        const authEmail = document.getElementById('authEmail');
+        const authPassword = document.getElementById('authPassword');
+        const authName = document.getElementById('authName');
+        const authBtn = document.getElementById('authBtn');
+        const authError = document.getElementById('authError');
+        const authSuccess = document.getElementById('authSuccess');
+        const switchLink = document.getElementById('switchLink');
+        const switchText = document.getElementById('switchText');
+        const authSub = document.getElementById('authSub');
+        const nameGroup = document.getElementById('nameGroup');
+        const passwordHint = document.getElementById('passwordHint');
+
+        const productsGrid = document.getElementById('productsGrid');
+        const ordersList = document.getElementById('ordersList');
+        const balanceDisplay = document.getElementById('userBalance');
+        const userEmailDisplay = document.getElementById('userEmailDisplay');
+        const depositAmount = document.getElementById('depositAmount');
+        const depositBtn = document.getElementById('depositBtn');
+        const currencySelect = document.getElementById('currencySelect');
+        const productCount = document.getElementById('productCount');
+        const orderCount = document.getElementById('orderCount');
+        const totalProductsHero = document.getElementById('totalProductsHero');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        const modal = document.getElementById('productModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalPrice = document.getElementById('modalPrice');
+        const modalStock = document.getElementById('modalStock');
+        const modalDetails = document.getElementById('modalDetails');
+        const modalNote = document.getElementById('modalNote');
+        const modalOrderBtn = document.getElementById('modalOrderBtn');
+        const modalCloseBtn = document.getElementById('modalCloseBtn');
+
+        // ============================================================
+        // TOAST
+        // ============================================================
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 4000);
+        }
+
+        // ============================================================
+        // CURRENCY HELPERS
+        // ============================================================
+        function getCurrencySymbol() { return CURRENCY_SYMBOLS[selectedCurrency] || '$'; }
+
+        function getRate() { return CURRENCY_RATES[selectedCurrency] || 1; }
+
+        function convertPrice(usdPrice) { return usdPrice * getRate(); }
+
+        function formatPrice(usdPrice) {
+            const converted = convertPrice(usdPrice);
+            const symbol = getCurrencySymbol();
+            if (selectedCurrency === 'pkr' || selectedCurrency === 'inr') {
+                return `${symbol} ${converted.toFixed(0)}`;
+            }
+            return `${symbol} ${converted.toFixed(2)}`;
+        }
+
+        // ============================================================
+        // AUTHENTICATION
+        // ============================================================
+
+        function toggleAuthMode() {
+            isSignup = !isSignup;
+            if (isSignup) {
+                authBtn.textContent = 'Create Account';
+                switchText.textContent = 'Already have an account?';
+                switchLink.textContent = 'Sign In';
+                authSub.textContent = 'Create your account to get started';
+                nameGroup.style.display = 'block';
+                passwordHint.style.display = 'block';
+            } else {
+                authBtn.textContent = 'Sign In';
+                switchText.textContent = 'Don\'t have an account?';
+                switchLink.textContent = 'Sign Up';
+                authSub.textContent = 'Sign in to access your account';
+                nameGroup.style.display = 'none';
+                passwordHint.style.display = 'none';
+            }
+            authError.style.display = 'none';
+            authSuccess.style.display = 'none';
+        }
+
+        switchLink.addEventListener('click', toggleAuthMode);
+
+        async function handleAuth() {
+            const email = authEmail.value.trim();
+            const password = authPassword.value;
+            const name = authName.value.trim();
+
+            authError.style.display = 'none';
+            authSuccess.style.display = 'none';
+
+            if (!email || !password) {
+                authError.textContent = 'Please fill all fields.';
+                authError.style.display = 'block';
+                return;
+            }
+
+            if (password.length < 6) {
+                authError.textContent = 'Password must be at least 6 characters.';
+                authError.style.display = 'block';
+                return;
+            }
+
+            try {
+                if (isSignup) {
+                    // Sign Up
+                    if (!name) {
+                        authError.textContent = 'Please enter your name.';
+                        authError.style.display = 'block';
+                        return;
+                    }
+                    const userCred = await auth.createUserWithEmailAndPassword(email, password);
+                    await userCred.user.updateProfile({ displayName: name });
+                    await db.collection('users').doc(email).set({
+                        name: name,
+                        email: email,
+                        balance: 0,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    authSuccess.textContent = '✅ Account created successfully!';
+                    authSuccess.style.display = 'block';
+                    showToast('Welcome to HubX Store!', 'success');
+                } else {
+                    // Sign In
+                    await auth.signInWithEmailAndPassword(email, password);
+                    showToast('Welcome back!', 'success');
+                }
+            } catch (error) {
+                authError.textContent = error.message;
+                authError.style.display = 'block';
+                console.error('Auth error:', error);
+            }
+        }
+
+        authBtn.addEventListener('click', handleAuth);
+
+        authPassword.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') handleAuth();
+        });
+
+        authEmail.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') handleAuth();
+        });
+
+        // ============================================================
+        // AUTH STATE LISTENER
+        // ============================================================
+
+        auth.onAuthStateChanged((user) => {
+            loader.classList.add('hidden');
+
+            if (user) {
+                userEmail = user.email;
+                userEmailDisplay.textContent = userEmail;
+                authOverlay.classList.add('hidden');
+                mainNav.style.display = 'flex';
+                mainContent.style.display = 'block';
+
+                // Load data
+                listenProducts();
+                listenOrders();
+                listenBalance();
+
+                // Show welcome
+                if (user.displayName) {
+                    showToast(`Welcome ${user.displayName}!`, 'success');
+                }
+            } else {
+                authOverlay.classList.remove('hidden');
+                mainNav.style.display = 'none';
+                mainContent.style.display = 'none';
+            }
+        });
+
+        // ============================================================
+        // LOGOUT
+        // ============================================================
+
+        logoutBtn.addEventListener('click', async () => {
+            await auth.signOut();
+            showToast('Logged out.', 'warning');
+        });
+
+        // ============================================================
+        // FIREBASE - REAL-TIME LISTENERS
+        // ============================================================
+
+        function listenProducts() {
+            db.collection('products').onSnapshot((snapshot) => {
+                if (!snapshot.empty) {
+                    products = [];
+                    snapshot.forEach((doc) => {
+                        products.push({ id: doc.id, ...doc.data() });
+                    });
+                } else {
+                    // Seed default products
+                    products = DEFAULT_PRODUCTS;
+                    for (const p of products) {
+                        db.collection('products').doc(p.id).set(p, { merge: true });
+                    }
+                }
+                renderProducts();
+                updateCounts();
+            }, (error) => {
+                console.error('Products error:', error);
+                products = DEFAULT_PRODUCTS;
+                renderProducts();
+                updateCounts();
+            });
+        }
+
+        function listenOrders() {
+            if (!userEmail) return;
+            db.collection('orders')
+                .where('userEmail', '==', userEmail)
+                .orderBy('createdAt', 'desc')
+                .onSnapshot((snapshot) => {
+                    orders = [];
+                    snapshot.forEach((doc) => {
+                        orders.push({ id: doc.id, ...doc.data() });
+                    });
+                    renderOrders();
+                    orderCount.textContent = `${orders.length} orders`;
+                });
+        }
+
+        function listenBalance() {
+            if (!userEmail) return;
+            db.collection('users').doc(userEmail).onSnapshot((doc) => {
+                if (doc.exists) {
+                    userBalance = doc.data().balance || 0;
+                } else {
+                    db.collection('users').doc(userEmail).set({ balance: 0 });
+                    userBalance = 0;
+                }
+                updateBalanceUI();
+            });
+        }
+
+        // ============================================================
+        // RENDER FUNCTIONS
+        // ============================================================
+
+        function renderProducts() {
+            if (!products || !products.length) {
+                productsGrid.innerHTML =
+                    `<div class="empty-state" style="grid-column:1/-1;"><i class="fas fa-box-open"></i><p>No products available.</p></div>`;
+                return;
+            }
+
+            productsGrid.innerHTML = products.map((p, index) => {
+                let stockClass = 'in-stock';
+                let stockText = `${p.stock} in stock`;
+                if (p.stock === 0) { stockClass = 'out-stock';
+                    stockText = 'Out of stock'; } else if (p.stock < 10) { stockClass = 'low-stock';
+                    stockText = `Only ${p.stock} left`; }
+
+                return `
+                    <div class="product-card" onclick="showProductDetail('${p.id}')">
+                        <span class="badge-stock ${stockClass}">${stockText}</span>
+                        <div class="icon"><i class="fas ${p.icon || 'fa-cube'}"></i></div>
+                        <h3>${p.name}</h3>
+                        <div class="slug">${p.slug}</div>
+                        <div class="price">${formatPrice(p.price)} <small>${selectedCurrency.toUpperCase()}</small></div>
+                        <button class="btn-order" ${p.stock === 0 ? 'disabled' : ''} onclick="event.stopPropagation();showProductDetail('${p.id}')">
+                            ${p.stock === 0 ? 'Out of Stock' : 'View Details'}
+                        </button>
+                    </div>
+                `;
+            }).join('');
+
+            totalProductsHero.textContent = products.length;
+            productCount.textContent = `${products.length} products`;
+        }
+
+        function renderOrders() {
+            if (!orders || !orders.length) {
+                ordersList.innerHTML =
+                    `<div class="empty-state"><i class="fas fa-inbox"></i><p>No orders yet. Start shopping!</p></div>`;
+                return;
+            }
+
+            ordersList.innerHTML = orders.map((o) => `
+                <div class="order-item">
+                    <div>
+                        <div style="font-weight:600;">${o.product_name}</div>
+                        <div style="font-size:0.8rem;color:#888;">
+                            Qty: ${o.quantity} · ${o.createdAt ? new Date(o.createdAt.seconds * 1000).toLocaleString() : 'Just now'}
+                        </div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+                        <span style="font-weight:700;">$${o.total.toFixed(2)}</span>
+                        <span class="order-status ${o.status}">${o.status === 'delivered' ? '✅ Delivered' : '⏳ Processing'}</span>
+                    </div>
+                    ${o.items ? `<div class="order-items">${o.items.join(' · ')}</div>` : ''}
+                </div>
+            `).join('');
+        }
+
+        function updateBalanceUI() {
+            const symbol = getCurrencySymbol();
+            const rate = getRate();
+            const converted = userBalance * rate;
+            if (selectedCurrency === 'pkr' || selectedCurrency === 'inr') {
+                balanceDisplay.textContent = `${symbol} ${converted.toFixed(0)}`;
+            } else {
+                balanceDisplay.textContent = `${symbol} ${converted.toFixed(2)}`;
+            }
+        }
+
+        function updateCounts() {
+            productCount.textContent = `${products.length} products`;
+            totalProductsHero.textContent = products.length;
+        }
+
+        // ============================================================
+        // PRODUCT DETAIL MODAL
+        // ============================================================
+
+        function showProductDetail(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) {
+                showToast('Product not found.', 'error');
+                return;
+            }
+
+            selectedProduct = product;
+            modalTitle.innerHTML = `<i class="fas ${product.icon || 'fa-cube'}"></i> ${product.name}`;
+            modalPrice.textContent = formatPrice(product.price);
+            modalPrice.innerHTML += ` <small>${selectedCurrency.toUpperCase()}</small>`;
+
+            const stockClass = product.stock > 0 ? 'in-stock' : 'out-stock';
+            modalStock.className = `modal-stock ${stockClass}`;
+            modalStock.textContent = product.stock > 0 ? `✅ ${product.stock} in stock` : '❌ Out of stock';
+
+            // Details with bullet points
+            let detailsHTML = `<ul>`;
+            if (product.details) {
+                const lines = product.details.split('\n').filter(s => s.trim());
+                lines.forEach(line => {
+                    detailsHTML += `<li><span class="bullet">•</span> ${line}</li>`;
+                });
+            }
+            detailsHTML += `</ul>`;
+            modalDetails.innerHTML = detailsHTML;
+
+            if (product.note) {
+                modalNote.innerHTML = `<i class="fas fa-info-circle"></i> ${product.note}`;
+                modalNote.style.display = 'block';
+            } else {
+                modalNote.style.display = 'none';
+            }
+
+            modalOrderBtn.disabled = product.stock === 0;
+            modalOrderBtn.textContent = product.stock === 0 ? 'Out of Stock' : '🛒 Order Now';
+
+            modal.classList.add('active');
+        }
+
+        modalCloseBtn.addEventListener('click', () => modal.classList.remove('active'));
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) modal.classList.remove('active');
+        });
+
+        modalOrderBtn.addEventListener('click', async function() {
+            if (!selectedProduct || selectedProduct.stock === 0) {
+                showToast('Product out of stock!', 'error');
+                return;
+            }
+
+            const total = selectedProduct.price;
+            if (userBalance < total) {
+                showToast(`Insufficient balance! Need $${total.toFixed(2)}. Please deposit.`, 'error');
+                return;
+            }
+
+            try {
+                await db.collection('users').doc(userEmail).update({
+                    balance: firebase.firestore.FieldValue.increment(-total)
+                });
+
+                const productRef = db.collection('products').doc(selectedProduct.id);
+                await productRef.update({
+                    stock: firebase.firestore.FieldValue.increment(-1)
+                });
+
+                await db.collection('orders').add({
+                    product_id: selectedProduct.id,
+                    product_name: selectedProduct.name,
+                    quantity: 1,
+                    total: total,
+                    status: 'processing',
+                    items: [],
+                    userEmail: userEmail,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                modal.classList.remove('active');
+                showToast(`✅ Order placed! ${selectedProduct.name}`, 'success');
+                selectedProduct = null;
+
+            } catch (error) {
+                console.error('Order error:', error);
+                showToast('Failed to place order.', 'error');
+            }
+        });
+
+        // ============================================================
+        // DEPOSIT
+        // ============================================================
+
+        depositBtn.addEventListener('click', async function() {
+            const amount = parseFloat(depositAmount.value);
+
+            if (!amount || amount <= 0 || amount < 1) {
+                showToast('Please enter a valid amount (minimum 1 USDT).', 'warning');
+                return;
+            }
+
+            try {
+                await db.collection('users').doc(userEmail).update({
+                    balance: firebase.firestore.FieldValue.increment(amount)
+                });
+                depositAmount.value = '';
+                showToast(`💰 Deposited $${amount.toFixed(2)} USDT successfully!`, 'success');
+            } catch (error) {
+                console.error('Deposit error:', error);
+                showToast('Failed to deposit.', 'error');
+            }
+        });
+
+        // ============================================================
+        // CURRENCY CHANGE
+        // ============================================================
+
+        currencySelect.addEventListener('change', function() {
+            selectedCurrency = this.value;
+            renderProducts();
+            updateBalanceUI();
+        });
+
+        // ============================================================
+        // INIT
+        // ============================================================
+
+        console.log('🚀 HubX Store - Full Secure System');
+        console.log('🔐 Authentication with Firebase');
+        console.log('📦 Products from screenshots');
+        console.log('💵 Multi-currency: USD, PKR, INR');
+        console.log('👑 Admin panel: admin.html');
+    </script>
+
+</body>
+</html>
