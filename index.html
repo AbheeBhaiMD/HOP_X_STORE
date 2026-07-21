@@ -909,6 +909,98 @@
             color: white;
         }
 
+        /* ===== DEPOSIT MODAL ===== */
+        .deposit-modal {
+            max-width: 620px;
+        }
+        .deposit-modal-head {
+            text-align: center;
+            margin-bottom: 18px;
+        }
+        .deposit-modal-logo {
+            font-size: 1.6rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--accent), var(--accent-glow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .deposit-modal-title {
+            font-size: 1.8rem;
+            font-weight: 900;
+            margin-top: 4px;
+        }
+        .deposit-modal-title .highlight {
+            background: linear-gradient(135deg, var(--success), var(--accent-glow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .deposit-modal-sub {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 4px;
+        }
+        .method-qr {
+            display: block;
+            margin: 12px auto 4px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: white;
+            padding: 6px;
+        }
+        .deposit-trust-row {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            padding: 12px 16px;
+            background: rgba(108, 92, 231, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(108, 92, 231, 0.1);
+            font-size: 0.85rem;
+        }
+        .proof-upload-label {
+            flex: 1;
+            min-width: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1.5px dashed rgba(108, 92, 231, 0.3);
+            border-radius: 12px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+        .proof-upload-label:hover {
+            border-color: var(--accent);
+            color: white;
+            background: rgba(108, 92, 231, 0.06);
+        }
+        .deposit-form select {
+            flex: 1;
+            min-width: 160px;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            color: white;
+        }
+        .deposit-form select option {
+            background: var(--primary);
+        }
+        .request-proof-thumb {
+            width: 46px;
+            height: 46px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+        }
+
         /* ===== TOAST ===== */
         .toast-container {
             position: fixed;
@@ -1245,6 +1337,7 @@
         </div>
         <div class="nav-links">
             <button class="active-link" id="userPanelBtn" onclick="showPanel('user')"><i class="fas fa-home"></i> Products</button>
+            <button id="depositNavBtn" onclick="openDepositModal()" style="color:var(--success);"><i class="fas fa-plus-circle"></i> Deposit</button>
             <button id="adminPanelBtn" onclick="showPanel('admin')" style="display:none;color:var(--accent);"><i class="fas fa-user-shield"></i> Admin</button>
             <select class="currency-select" id="currencySelect">
                 <option value="usd">$ USD</option>
@@ -1291,61 +1384,16 @@
                 </div>
             </section>
 
-            <!-- ===== DEPOSIT SECTION ===== -->
+            <!-- ===== DEPOSIT TEASER ===== -->
             <section class="container" id="deposit">
-                <div class="deposit-section">
-                    <h2><i class="fas fa-plus-circle" style="color:var(--success);"></i> Deposit Funds</h2>
-                    <p class="sub">Choose your preferred method and complete the payment. Upload transaction proof for verification.</p>
-
-                    <div class="deposit-methods">
-                        <div class="deposit-method-card">
-                            <div class="method-title"><i class="fas fa-credit-card"></i> METHOD 1</div>
-                            <div style="font-weight:600;font-size:1.1rem;">BINANCE PAY ID</div>
-                            <div class="method-value">1241005512</div>
-                            <div class="method-tags">
-                                <span>🔒 Secure</span>
-                                <span>⚡ Instant</span>
-                                <span>💰 No Fees</span>
-                            </div>
-                        </div>
-                        <div class="deposit-method-card">
-                            <div class="method-title"><i class="fas fa-coins"></i> METHOD 2</div>
-                            <div style="font-weight:600;font-size:1.1rem;">USDT BEP20 ADDRESS</div>
-                            <div class="method-value">0xf67a65445604976b64458e0a72d82c35230d10c8</div>
-                            <div class="method-tags">
-                                <span>🔒 Secure</span>
-                                <span>⚡ Fast</span>
-                                <span>📦 BEP20 Network</span>
-                            </div>
-                        </div>
+                <div class="deposit-section" style="display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;">
+                    <div>
+                        <h2><i class="fas fa-plus-circle" style="color:var(--success);"></i> Deposit Funds</h2>
+                        <p class="sub" style="margin-bottom:0;">Top up your balance with Binance Pay or USDT (BEP20), then upload proof for instant verification.</p>
                     </div>
-
-                    <div style="display:flex;gap:20px;flex-wrap:wrap;margin-bottom:20px;padding:12px 16px;background:rgba(108,92,231,0.05);border-radius:12px;border:1px solid rgba(108,92,231,0.1);">
-                        <span><i class="fas fa-shield-alt" style="color:var(--accent);"></i> 100% SECURE TRANSACTIONS</span>
-                        <span><i class="fas fa-bolt" style="color:var(--success);"></i> INSTANT DEPOSIT</span>
-                        <span><i class="fas fa-headset" style="color:var(--warning);"></i> 24/7 SUPPORT</span>
-                        <span><i class="fas fa-users" style="color:var(--accent);"></i> TRUSTED BY THOUSANDS</span>
-                    </div>
-
-                    <div class="deposit-form">
-                        <h4 style="margin-bottom:4px;font-size:1.1rem;">Submit Deposit Request</h4>
-                        <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:12px;">Send the amount to the address above and fill in the details below.</p>
-
-                        <div class="form-row">
-                            <input type="text" id="depositUsername" placeholder="Your Username / Email" />
-                            <input type="number" id="depositAmountInput" placeholder="Amount (USDT)" min="1" step="0.5" />
-                        </div>
-                        <div class="form-row">
-                            <input type="text" id="depositTxHash" placeholder="Transaction ID / Hash" />
-                            <input type="text" id="depositMethod" placeholder="Payment Method (Binance Pay / USDT BEP20)" />
-                        </div>
-                        <div class="form-row">
-                            <textarea id="depositProof" placeholder="Paste your transaction proof or screenshot link here..."></textarea>
-                        </div>
-                        <button class="btn-deposit-submit" id="depositSubmitBtn">
-                            <i class="fas fa-paper-plane"></i> Submit Deposit Request
-                        </button>
-                    </div>
+                    <button class="btn-deposit-submit" onclick="openDepositModal()">
+                        <i class="fas fa-wallet"></i> Open Deposit Center
+                    </button>
                 </div>
             </section>
 
@@ -1455,6 +1503,78 @@
                 </div>
                 <button class="btn-confirm" id="modalOrderBtn"><i class="fas fa-shopping-cart"></i> Order Now</button>
                 <button class="btn-close" id="modalCloseBtn">Close</button>
+            </div>
+        </div>
+
+        <!-- Deposit Modal -->
+        <div class="modal-overlay" id="depositModal">
+            <div class="modal deposit-modal">
+                <div class="deposit-modal-head">
+                    <div class="deposit-modal-logo">Hub<span style="-webkit-text-fill-color:white;">X</span></div>
+                    <div class="deposit-modal-title">Deposit <span class="highlight">Now</span></div>
+                    <div class="deposit-modal-sub">Choose your preferred method below</div>
+                </div>
+
+                <div class="deposit-methods">
+                    <div class="deposit-method-card">
+                        <div class="method-title"><i class="fas fa-credit-card"></i> METHOD 1</div>
+                        <div style="font-weight:600;font-size:1.05rem;">BINANCE PAY ID</div>
+                        <div class="method-value">1241005512</div>
+                        <img class="method-qr" alt="Binance Pay QR" src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&margin=8&data=1241005512" />
+                        <div class="method-tags">
+                            <span>🔒 Secure</span>
+                            <span>⚡ Instant</span>
+                            <span>💰 No Fees</span>
+                        </div>
+                    </div>
+                    <div class="deposit-method-card">
+                        <div class="method-title"><i class="fas fa-coins"></i> METHOD 2</div>
+                        <div style="font-weight:600;font-size:1.05rem;">USDT BEP20 ADDRESS</div>
+                        <div class="method-value" style="font-size:0.8rem;">0xf67a65445604976b64458e0a72d82c35230d10c8</div>
+                        <img class="method-qr" alt="USDT BEP20 QR" src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&margin=8&data=0xf67a65445604976b64458e0a72d82c35230d10c8" />
+                        <div class="method-tags">
+                            <span>🔒 Secure</span>
+                            <span>⚡ Fast</span>
+                            <span>📦 BEP20</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="deposit-trust-row">
+                    <span><i class="fas fa-shield-alt" style="color:var(--accent);"></i> 100% Secure</span>
+                    <span><i class="fas fa-bolt" style="color:var(--success);"></i> Instant</span>
+                    <span><i class="fas fa-headset" style="color:var(--warning);"></i> 24/7 Support</span>
+                    <span><i class="fas fa-users" style="color:var(--accent);"></i> Trusted</span>
+                </div>
+
+                <h4 style="margin:18px 0 4px;font-size:1.05rem;">Submit Your Deposit</h4>
+                <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:12px;">Send the amount above, then fill this in so we can verify and credit your balance.</p>
+
+                <div class="deposit-form">
+                    <div class="form-row">
+                        <input type="text" id="depositUsername" placeholder="Your Username / Email" />
+                        <input type="number" id="depositAmountInput" placeholder="Amount (USDT)" min="1" step="0.5" />
+                    </div>
+                    <div class="form-row">
+                        <select id="depositMethodSelect">
+                            <option value="Binance Pay">Binance Pay</option>
+                            <option value="USDT BEP20">USDT BEP20</option>
+                        </select>
+                        <input type="text" id="depositTxHash" placeholder="Transaction ID / Hash" />
+                    </div>
+                    <div class="form-row">
+                        <label class="proof-upload-label" for="depositProofFile">
+                            <i class="fas fa-camera"></i>
+                            <span id="proofUploadText">Upload transaction screenshot</span>
+                            <input type="file" id="depositProofFile" accept="image/*" style="display:none;" />
+                        </label>
+                    </div>
+                    <img id="proofPreview" style="display:none;max-height:160px;border-radius:12px;border:1px solid rgba(255,255,255,0.1);object-fit:contain;" />
+                    <button class="btn-deposit-submit" id="depositSubmitBtn">
+                        <i class="fas fa-paper-plane"></i> Submit Deposit Request
+                    </button>
+                </div>
+                <button class="btn-close" onclick="closeDepositModal()">Close</button>
             </div>
         </div>
 
@@ -1592,6 +1712,14 @@
         const CURRENCY_RATES = { usd: 1, pkr: 278, inr: 83 };
         const CURRENCY_SYMBOLS = { usd: '$', pkr: '₨', inr: '₹' };
 
+        // Add any email here that should always be treated as an Admin,
+        // even on a brand-new device/browser where Firestore hasn't been read yet.
+        const ADMIN_EMAILS = ['admin@hubx.com'];
+
+        // Max size (bytes, as base64 chars) we'll accept for a deposit proof image
+        const MAX_PROOF_IMAGE_CHARS = 900000;
+        let depositProofImageData = null;
+
         // ============================================================
         // DOM REFS
         // ============================================================
@@ -1662,8 +1790,11 @@
         const depositUsername = document.getElementById('depositUsername');
         const depositAmountInput = document.getElementById('depositAmountInput');
         const depositTxHash = document.getElementById('depositTxHash');
-        const depositMethod = document.getElementById('depositMethod');
-        const depositProof = document.getElementById('depositProof');
+        const depositMethodSelect = document.getElementById('depositMethodSelect');
+        const depositProofFile = document.getElementById('depositProofFile');
+        const proofPreview = document.getElementById('proofPreview');
+        const proofUploadText = document.getElementById('proofUploadText');
+        const depositModal = document.getElementById('depositModal');
 
         // ============================================================
         // TOAST
@@ -1816,40 +1947,37 @@
                 userEmail = user.email;
                 userEmailDisplay.textContent = userEmail;
 
+                const shouldBeAdmin = ADMIN_EMAILS.includes(userEmail);
+
                 try {
-                    const userDoc = await db.collection('users').doc(userEmail).get();
-                    if (userDoc.exists && userDoc.data().isAdmin) {
-                        isAdmin = true;
-                        adminBadge.style.display = 'inline';
-                        adminPanelBtn.style.display = 'inline';
+                    const userDocRef = db.collection('users').doc(userEmail);
+                    const userDoc = await userDocRef.get();
+
+                    if (userDoc.exists) {
+                        isAdmin = !!userDoc.data().isAdmin || shouldBeAdmin;
+                        // Self-heal: if this email is on the admin list but the stored
+                        // record doesn't say so yet (e.g. old data, new device), fix it.
+                        if (shouldBeAdmin && !userDoc.data().isAdmin) {
+                            await userDocRef.set({ isAdmin: true }, { merge: true });
+                        }
                     } else {
-                        isAdmin = false;
-                        adminBadge.style.display = 'none';
-                        adminPanelBtn.style.display = 'none';
-                    }
-                } catch (e) {
-                    if (userEmail === 'admin@hubx.com') {
-                        await db.collection('users').doc(userEmail).set({
-                            name: 'Admin',
-                            email: userEmail,
-                            balance: 1000,
-                            isAdmin: true,
-                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                        });
-                        isAdmin = true;
-                        adminBadge.style.display = 'inline';
-                        adminPanelBtn.style.display = 'inline';
-                    } else {
-                        await db.collection('users').doc(userEmail).set({
+                        isAdmin = shouldBeAdmin;
+                        await userDocRef.set({
                             name: user.displayName || 'User',
                             email: userEmail,
-                            balance: 0,
-                            isAdmin: false,
+                            balance: shouldBeAdmin ? 1000 : 0,
+                            isAdmin: shouldBeAdmin,
                             createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                        });
-                        isAdmin = false;
+                        }, { merge: true });
                     }
+                } catch (e) {
+                    console.error('Role check error:', e);
+                    // Even if Firestore read/write failed, don't lock a known admin out.
+                    isAdmin = shouldBeAdmin;
                 }
+
+                adminBadge.style.display = isAdmin ? 'inline' : 'none';
+                adminPanelBtn.style.display = isAdmin ? 'inline' : 'none';
 
                 authOverlay.classList.add('hidden');
                 mainNav.style.display = 'flex';
@@ -1864,6 +1992,9 @@
 
                 if (user.displayName) {
                     showToast(`Welcome ${user.displayName}!`, 'success');
+                }
+                if (isAdmin) {
+                    showToast('👑 Admin access detected — use the Admin tab to manage the store.', 'success');
                 }
             } else {
                 authOverlay.classList.remove('hidden');
@@ -2129,15 +2260,81 @@
         });
 
         // ============================================================
-        // DEPOSIT REQUEST
+        // DEPOSIT MODAL - OPEN / CLOSE
+        // ============================================================
+
+        function openDepositModal() {
+            if (userEmail) depositUsername.value = depositUsername.value || userEmail;
+            depositModal.classList.add('active');
+        }
+
+        function closeDepositModal() {
+            depositModal.classList.remove('active');
+        }
+
+        depositModal.addEventListener('click', (e) => {
+            if (e.target === depositModal) closeDepositModal();
+        });
+
+        // ============================================================
+        // DEPOSIT PROOF IMAGE - compress client-side, then store as base64
+        // ============================================================
+
+        depositProofFile.addEventListener('change', function() {
+            const file = this.files && this.files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                showToast('Please choose an image file.', 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const maxWidth = 900;
+                    const scale = Math.min(1, maxWidth / img.width);
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.width * scale;
+                    canvas.height = img.height * scale;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+                    let quality = 0.75;
+                    let dataUrl = canvas.toDataURL('image/jpeg', quality);
+                    while (dataUrl.length > MAX_PROOF_IMAGE_CHARS && quality > 0.3) {
+                        quality -= 0.1;
+                        dataUrl = canvas.toDataURL('image/jpeg', quality);
+                    }
+
+                    if (dataUrl.length > MAX_PROOF_IMAGE_CHARS) {
+                        showToast('Image is too large even after compression. Try a smaller screenshot.', 'error');
+                        depositProofImageData = null;
+                        proofUploadText.textContent = 'Upload transaction screenshot';
+                        proofPreview.style.display = 'none';
+                        return;
+                    }
+
+                    depositProofImageData = dataUrl;
+                    proofUploadText.textContent = `✅ ${file.name}`;
+                    proofPreview.src = dataUrl;
+                    proofPreview.style.display = 'block';
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        // ============================================================
+        // DEPOSIT REQUEST SUBMIT
         // ============================================================
 
         depositBtn.addEventListener('click', async function() {
             const username = depositUsername.value.trim();
             const amount = parseFloat(depositAmountInput.value);
             const txHash = depositTxHash.value.trim();
-            const method = depositMethod.value.trim();
-            const proof = depositProof.value.trim();
+            const method = depositMethodSelect.value;
 
             if (!username) {
                 showToast('Please enter your username/email.', 'error');
@@ -2151,14 +2348,13 @@
                 showToast('Please enter the transaction ID/hash.', 'error');
                 return;
             }
-            if (!method) {
-                showToast('Please select a payment method.', 'error');
+            if (!depositProofImageData) {
+                showToast('Please upload your transaction screenshot.', 'error');
                 return;
             }
-            if (!proof) {
-                showToast('Please paste your transaction proof.', 'error');
-                return;
-            }
+
+            depositBtn.disabled = true;
+            depositBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
 
             try {
                 await db.collection('deposits').add({
@@ -2167,21 +2363,27 @@
                     amount: amount,
                     txHash: txHash,
                     method: method,
-                    proof: proof,
+                    proofImage: depositProofImageData,
                     status: 'pending',
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
 
-                depositUsername.value = '';
+                depositUsername.value = userEmail || '';
                 depositAmountInput.value = '';
                 depositTxHash.value = '';
-                depositMethod.value = '';
-                depositProof.value = '';
+                depositProofFile.value = '';
+                depositProofImageData = null;
+                proofUploadText.textContent = 'Upload transaction screenshot';
+                proofPreview.style.display = 'none';
 
                 showToast('💰 Deposit request submitted! Admin will verify it shortly.', 'success');
+                closeDepositModal();
             } catch (error) {
                 console.error('Deposit error:', error);
                 showToast('Failed to submit deposit request.', 'error');
+            } finally {
+                depositBtn.disabled = false;
+                depositBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Deposit Request';
             }
         });
 
@@ -2198,16 +2400,18 @@
 
             depositRequestsList.innerHTML = deposits.map(d => `
                 <div class="deposit-request-item">
-                    <div>
-                        <div class="request-user">👤 ${d.username}</div>
-                        <div style="font-size:0.8rem;color:var(--text-muted);">
-                            ${d.userEmail} · ${d.method} · ${d.txHash.slice(0, 20)}...
+                    <div style="display:flex;align-items:center;gap:12px;">
+                        ${d.proofImage ? `<img class="request-proof-thumb" src="${d.proofImage}" onclick="viewProofImage('${d.id}')" title="Click to enlarge" />` : (d.proof ? `<div class="request-proof" title="${d.proof}">📄 ${d.proof.slice(0, 40)}</div>` : '')}
+                        <div>
+                            <div class="request-user">👤 ${d.username}</div>
+                            <div style="font-size:0.8rem;color:var(--text-muted);">
+                                ${d.userEmail} · ${d.method} · ${d.txHash.slice(0, 20)}...
+                            </div>
                         </div>
-                        <div class="request-proof" title="${d.proof}">📄 ${d.proof.slice(0, 60)}${d.proof.length > 60 ? '...' : ''}</div>
                     </div>
                     <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
                         <span class="request-amount">$${d.amount.toFixed(2)}</span>
-                        <span class="badge-status ${d.status}">${d.status === 'verified' ? '✅ Verified' : '⏳ Pending'}</span>
+                        <span class="badge-status ${d.status}">${d.status === 'verified' ? '✅ Verified' : (d.status === 'rejected' ? '❌ Rejected' : '⏳ Pending')}</span>
                         ${d.status === 'pending' ? `
                             <button class="btn-verify" onclick="verifyDeposit('${d.id}', ${d.amount})"><i class="fas fa-check"></i> Verify</button>
                             <button class="btn-reject" onclick="rejectDeposit('${d.id}')"><i class="fas fa-times"></i> Reject</button>
@@ -2215,6 +2419,15 @@
                     </div>
                 </div>
             `).join('');
+
+            window._depositsCache = deposits;
+        }
+
+        function viewProofImage(id) {
+            const d = (window._depositsCache || []).find(x => x.id === id);
+            if (!d || !d.proofImage) return;
+            const win = window.open('', '_blank');
+            win.document.write(`<title>Deposit Proof - ${d.username}</title><body style="margin:0;background:#0a0e1a;display:flex;align-items:center;justify-content:center;min-height:100vh;"><img src="${d.proofImage}" style="max-width:100%;max-height:100vh;" /></body>`);
         }
 
         async function verifyDeposit(id, amount) {
@@ -2319,192 +2532,4 @@
                                     <td><span class="badge-status ${o.status}">${o.status === 'delivered' ? '✅ Delivered' : '⏳ Processing'}</span></td>
                                     <td>
                                         ${o.status === 'processing' ? `<button class="btn-sm deliver" onclick="deliverOrder('${o.id}')"><i class="fas fa-check"></i></button>` : ''}
-                                        <button class="btn-sm delete" onclick="deleteOrder('${o.id}')"><i class="fas fa-trash"></i></button>
-                                    </td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                `;
-
-                const revenue = allOrders.reduce((sum, o) => sum + o.total, 0);
-                totalRevenueEl.textContent = `$${revenue.toFixed(2)}`;
-                const pending = allOrders.filter(o => o.status === 'processing').length;
-                pendingOrdersEl.textContent = pending;
-                totalOrdersEl.textContent = allOrders.length;
-            });
-        }
-
-        function updateAdminStats() {
-            totalProductsEl.textContent = products.length;
-        }
-
-        // ============================================================
-        // ADMIN ACTIONS
-        // ============================================================
-
-        async function addProduct() {
-            const name = productName.value.trim();
-            const slug = productSlug.value.trim();
-            const price = parseFloat(productPrice.value);
-            const stock = parseInt(productStock.value);
-            const icon = productIcon.value.trim() || 'fa-cube';
-            const details = productDetails.value.trim();
-            const note = productNote.value.trim();
-
-            if (!name || !slug || isNaN(price) || isNaN(stock)) {
-                showToast('Please fill all fields.', 'error');
-                return;
-            }
-
-            try {
-                if (editingProductId) {
-                    await db.collection('products').doc(editingProductId).update({
-                        name,
-                        slug,
-                        price,
-                        stock,
-                        icon,
-                        details,
-                        note,
-                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                    showToast(`✅ Product updated!`, 'success');
-                    editingProductId = null;
-                    cancelEditBtn.style.display = 'none';
-                    addBtn.innerHTML = '<i class="fas fa-plus"></i> Add Product';
-                } else {
-                    await db.collection('products').add({
-                        name,
-                        slug,
-                        price,
-                        stock,
-                        icon,
-                        details,
-                        note,
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                    showToast(`✅ Product added!`, 'success');
-                }
-                productName.value = '';
-                productSlug.value = '';
-                productPrice.value = '';
-                productStock.value = '';
-                productIcon.value = 'fa-cube';
-                productDetails.value = '';
-                productNote.value = '';
-            } catch (error) {
-                showToast('Failed to save product.', 'error');
-            }
-        }
-
-        function editProduct(id) {
-            const product = products.find(p => p.id === id);
-            if (!product) return;
-            editingProductId = id;
-            productName.value = product.name;
-            productSlug.value = product.slug;
-            productPrice.value = product.price;
-            productStock.value = product.stock;
-            productIcon.value = product.icon || 'fa-cube';
-            productDetails.value = product.details || '';
-            productNote.value = product.note || '';
-            cancelEditBtn.style.display = 'inline-block';
-            addBtn.innerHTML = '<i class="fas fa-save"></i> Update Product';
-        }
-
-        cancelEditBtn.addEventListener('click', () => {
-            editingProductId = null;
-            cancelEditBtn.style.display = 'none';
-            addBtn.innerHTML = '<i class="fas fa-plus"></i> Add Product';
-            productName.value = '';
-            productSlug.value = '';
-            productPrice.value = '';
-            productStock.value = '';
-            productIcon.value = 'fa-cube';
-            productDetails.value = '';
-            productNote.value = '';
-        });
-
-        async function deleteProduct(id) {
-            if (!confirm('Delete this product?')) return;
-            await db.collection('products').doc(id).delete();
-            showToast('Product deleted.', 'warning');
-        }
-
-        async function deliverOrder(id) {
-            const order = await db.collection('orders').doc(id).get();
-            if (!order.exists) return;
-            const orderData = order.data();
-            const items = Array.from({ length: orderData.quantity || 1 }, (_, i) =>
-                `user${Date.now().toString(36)}:pass${Math.random().toString(36).substring(2, 8)}`
-            );
-            await db.collection('orders').doc(id).update({
-                status: 'delivered',
-                items: items,
-                deliveredAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
-            showToast('✅ Order delivered!', 'success');
-        }
-
-        async function deleteOrder(id) {
-            if (!confirm('Delete this order?')) return;
-            await db.collection('orders').doc(id).delete();
-            showToast('Order deleted.', 'warning');
-        }
-
-        async function resetAll() {
-            if (!confirm('⚠️ Delete ALL data?')) return;
-            if (!confirm('Last chance!')) return;
-            const productsSnapshot = await db.collection('products').get();
-            await Promise.all(productsSnapshot.docs.map(doc => doc.ref.delete()));
-            const ordersSnapshot = await db.collection('orders').get();
-            await Promise.all(ordersSnapshot.docs.map(doc => doc.ref.delete()));
-            const depositsSnapshot = await db.collection('deposits').get();
-            await Promise.all(depositsSnapshot.docs.map(doc => doc.ref.delete()));
-            const usersSnapshot = await db.collection('users').get();
-            await Promise.all(usersSnapshot.docs.map(doc => doc.ref.update({ balance: 0 })));
-            showToast('All data reset.', 'warning');
-        }
-
-        // ============================================================
-        // EVENT LISTENERS
-        // ============================================================
-
-        addBtn.addEventListener('click', addProduct);
-        resetBtn.addEventListener('click', resetAll);
-
-        // ============================================================
-        // INIT
-        // ============================================================
-
-        async function createDefaultAdmin() {
-            try {
-                await auth.createUserWithEmailAndPassword('admin@hubx.com', 'admin123');
-                const user = await auth.signInWithEmailAndPassword('admin@hubx.com', 'admin123');
-                await db.collection('users').doc('admin@hubx.com').set({
-                    name: 'Admin',
-                    email: 'admin@hubx.com',
-                    balance: 1000,
-                    isAdmin: true,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                }, { merge: true });
-                console.log('✅ Admin account created!');
-            } catch (error) {
-                if (error.code !== 'auth/email-already-in-use') {
-                    console.log('Admin exists or error:', error.code);
-                }
-            }
-        }
-        setTimeout(createDefaultAdmin, 2000);
-
-        console.log('🚀 HubX Store - GOD LEVEL SYSTEM');
-        console.log('🔐 Authentication with Firebase');
-        console.log('👑 Admin: admin@hubx.com / admin123');
-        console.log('💰 Deposit System with Binance Pay & USDT');
-        console.log('📸 Deposit Proof Upload with Admin Verification');
-        console.log('🔄 Real-time sync between User & Admin');
-    </script>
-
-</body>
-</html>
+                            
