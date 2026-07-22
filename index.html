@@ -1865,8 +1865,6 @@
     </script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js">
     </script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js">
-    </script>
 
     <script>
         // ============================================================
@@ -1884,10 +1882,33 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
-        const storage = firebase.storage();
 
         // ============================================================
-        // DEFAULT PRODUCTS (from your screenshot)
+        // IMGBB API - FREE IMAGE HOSTING (NO Firebase Storage needed!)
+        // ============================================================
+        // ✅ YOUR API KEY - PASTED HERE
+        const IMGBB_API_KEY = '099e564bad4e94086794cff7cf37e242';
+
+        async function uploadImageToImgBB(file) {
+            const formData = new FormData();
+            formData.append('image', file);
+
+            const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                return data.data.url;
+            } else {
+                throw new Error(data.error?.message || 'Image upload failed');
+            }
+        }
+
+        // ============================================================
+        // DEFAULT PRODUCTS
         // ============================================================
         const DEFAULT_PRODUCTS = [
             { name: 'Google AI Pro (18m)', slug: 'google-ai-pro-18m', price: 1, stock: 543, icon: 'fa-robot',
@@ -2113,7 +2134,6 @@
                 }
             } catch (error) {
                 console.log('Seed products error:', error);
-                // If Firestore fails, use local products
                 products = DEFAULT_PRODUCTS.map((p, i) => ({ id: `local_${i}`, ...p }));
                 renderProducts();
             }
@@ -2152,16 +2172,13 @@
                     currentUserRole = user.email === 'admin@hubx.com' ? 'admin' : 'user';
                 }
 
-                // Seed products if empty
                 await seedProducts();
 
-                // Show app
                 authOverlay.classList.add('hidden');
                 mainNav.style.display = 'flex';
                 mainContent.style.display = 'block';
                 userEmailDisplay.textContent = user.email;
 
-                // Admin setup
                 if (currentUserRole === 'admin') {
                     adminBadge.style.display = 'inline';
                     adminPanelBtn.style.display = 'inline';
@@ -2172,7 +2189,6 @@
                     showPanel('user');
                 }
 
-                // Load data
                 loadProducts();
                 loadOrders();
                 loadDeposits();
@@ -2236,7 +2252,6 @@
                 productCount.textContent = `${products.length} products`;
             } catch (error) {
                 console.log('Load products error:', error);
-                // Use seeded products
                 if (products.length === 0) {
                     products = DEFAULT_PRODUCTS.map((p, i) => ({ id: `local_${i}`, ...p }));
                     renderProducts();
@@ -2416,7 +2431,7 @@
         }
 
         // ============================================================
-        // DEPOSITS (User) - FIXED WITH PROPER IMAGE UPLOAD
+        // DEPOSITS (User) - Using ImgBB for image upload (NO Firebase Storage!)
         // ============================================================
         depositForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -2437,27 +2452,22 @@
                 return;
             }
 
-            // Show loading state
             const submitBtn = depositForm.querySelector('.btn-submit');
             const originalText = submitBtn.innerHTML;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
             submitBtn.disabled = true;
 
             try {
-                // Upload screenshot to Firebase Storage
-                const fileName = `deposits/${Date.now()}_${file.name}`;
-                const ref = storage.ref(fileName);
-                await ref.put(file);
-                const screenshotUrl = await ref.getDownloadURL();
+                // Upload to ImgBB (FREE - No Firebase Storage needed!)
+                const imageUrl = await uploadImageToImgBB(file);
 
-                // Save deposit to Firestore with screenshot URL
                 await db.collection('deposits').add({
                     username: username,
                     userEmail: user.email,
                     amount: amount,
                     method: method,
                     txId: txId || '',
-                    screenshot: screenshotUrl,
+                    screenshot: imageUrl,
                     status: 'pending',
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
@@ -2520,7 +2530,7 @@
         }
 
         // ============================================================
-        // ADMIN: DEPOSIT REQUESTS - FIXED WITH IMAGE DISPLAY
+        // ADMIN: DEPOSIT REQUESTS
         // ============================================================
         async function loadAdminDeposits() {
             try {
@@ -2930,12 +2940,12 @@
         console.log('🚀 HubX Store - Premium Digital Products');
         console.log('👑 Admin: admin@hubx.com / admin123');
         console.log('👤 Regular users can sign up normally');
-        console.log('💰 Deposit system with screenshot upload - FULLY WORKING!');
+        console.log('💰 Deposit system using ImgBB (FREE - No Firebase Storage needed!)');
         console.log('✅ Admin approves deposits → user wallet credited instantly');
         console.log('📦 Products seeded from your screenshot!');
         console.log('🔄 Real-time sync between User & Admin panels');
         console.log('🎨 God-level animations everywhere!');
-        console.log('📸 Firebase Storage permissions are now configured!');
+        console.log('📸 ImgBB API Key: ✅ Configured');
     </script>
 
 </body>
