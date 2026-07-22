@@ -177,6 +177,17 @@
                 opacity: 1;
             }
         }
+        @keyframes rainbow {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
 
         .animate-fade-up {
             animation: fadeInUp 0.6s ease forwards;
@@ -230,6 +241,12 @@
         }
         .stagger-children>*:nth-child(8) {
             animation-delay: 0.4s;
+        }
+        .stagger-children>*:nth-child(9) {
+            animation-delay: 0.45s;
+        }
+        .stagger-children>*:nth-child(10) {
+            animation-delay: 0.5s;
         }
 
         /* ===== LOADER ===== */
@@ -704,6 +721,18 @@
         }
         .product-card:nth-child(6) {
             animation-delay: 0.3s;
+        }
+        .product-card:nth-child(7) {
+            animation-delay: 0.35s;
+        }
+        .product-card:nth-child(8) {
+            animation-delay: 0.4s;
+        }
+        .product-card:nth-child(9) {
+            animation-delay: 0.45s;
+        }
+        .product-card:nth-child(10) {
+            animation-delay: 0.5s;
         }
         .product-card::before {
             content: '';
@@ -1869,6 +1898,38 @@
         const storage = firebase.storage();
 
         // ============================================================
+        // DEFAULT PRODUCTS (from your screenshot)
+        // ============================================================
+        const DEFAULT_PRODUCTS = [
+            { name: 'Google AI Pro (18m)', slug: 'google-ai-pro-18m', price: 1, stock: 543, icon: 'fa-robot',
+                details: '18 Months Plan\n5TB cloud storage included\nYou can add 5 users\nNo Shared\n100% Private',
+                note: 'Redeem link must be used within 24 hours.' },
+            { name: 'Lovable Lite (12m)', slug: 'lovable-lite-12m', price: 5, stock: 18, icon: 'fa-heart',
+                details: '12 Months Plan\nUnlimited Prompt\nFrozen credits', note: 'Lifetime license key included.' },
+            { name: 'Canva Pro Single Invite (FW) (3 Years)', slug: 'canva-pro-3y', price: 1, stock: 4, icon: 'fa-paint-brush',
+                details: 'Instant Activation done by our Team\n1 Year Warranty\nInstant Payment Verification',
+                note: 'Delivery is automatic after payment confirmation.' },
+            { name: 'Github Developer Pack (2 Years)', slug: 'github-dev-2y', price: 14, stock: 6, icon: 'fa-code',
+                details: '2 Years Access\nAll Github Pro features\nStudent Pack benefits', note: 'Email verification required.' },
+            { name: 'Coursera Premium (12m)', slug: 'coursera-premium-12m', price: 3, stock: 193, icon: 'fa-graduation-cap',
+                details: 'Organization Plus (Org+) account\nCertificates in your name\nFull access to courses',
+                note: 'Log in using provided details.' },
+            { name: 'Lovable Unlimited Extension (Lifetime)', slug: 'lovable-unlimited-lifetime', price: 2, stock: 5,
+                icon: 'fa-star', details: 'Unlimited Prompt for Lovable project\nFrozen credits and unlimited prompt support\nLifetime License Key',
+                note: 'Extension Download & Setup Guide available.' },
+            { name: 'Lovable ∞ Extension Admin Panel (Lifetime)', slug: 'lovable-admin-lifetime', price: 20, stock: 0,
+                icon: 'fa-crown', details: 'Custom branding support\nAPI access & integration\nUnlimited license creation',
+                note: 'Lifetime means access remains valid.' },
+            { name: 'QuillBot Premium (1m)', slug: 'quillbot-premium-1m', price: 2, stock: 32, icon: 'fa-pen-fancy',
+                details: 'Duration: 1 Month\nOfficial Coupon Code\nFull Time Warranty', note: 'Use the code within 7 days.' },
+            { name: 'Notion Business (1 Year)', slug: 'notion-business-1y', price: 14, stock: 2, icon: 'fa-file-alt',
+                details: 'Instant Coupon Delivery\nCoupon Redeem Warranty Only', note: 'Delivery is automatic.' },
+            { name: 'Outlook Readymade Email', slug: 'outlook-readymade-email', price: 0.05, stock: 5927,
+                icon: 'fa-envelope', details: 'Ready to use Outlook email accounts\nVerified and active',
+                note: 'Instant delivery after payment.' }
+        ];
+
+        // ============================================================
         // STATE
         // ============================================================
         let currentUser = null;
@@ -2046,6 +2107,26 @@
         authEmail.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleAuth(); });
 
         // ============================================================
+        // SEED DEFAULT PRODUCTS
+        // ============================================================
+        async function seedProducts() {
+            try {
+                const snap = await db.collection('products').get();
+                if (snap.empty) {
+                    for (const p of DEFAULT_PRODUCTS) {
+                        await db.collection('products').add({
+                            ...p,
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                    }
+                    console.log('✅ Default products seeded!');
+                }
+            } catch (error) {
+                console.log('Seed products error:', error);
+            }
+        }
+
+        // ============================================================
         // AUTH STATE LISTENER
         // ============================================================
         auth.onAuthStateChanged(async (user) => {
@@ -2072,6 +2153,9 @@
                         currentUserRole = 'admin';
                     }
                 }
+
+                // Seed products if empty
+                await seedProducts();
 
                 // Show app
                 authOverlay.classList.add('hidden');
@@ -2316,7 +2400,7 @@
         }
 
         // ============================================================
-        // DEPOSITS (User)
+        // DEPOSITS (User) - FIXED WITH PROPER IMAGE UPLOAD
         // ============================================================
         depositForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -2333,14 +2417,21 @@
             const file = depositScreenshot.files[0];
 
             if (!username || !amount || !method || !file) {
-                showToast('Please fill all required fields.', 'error');
+                showToast('Please fill all required fields including image.', 'error');
                 return;
             }
 
+            // Show loading state
+            const submitBtn = depositForm.querySelector('.btn-submit');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+            submitBtn.disabled = true;
+
             try {
                 // Upload screenshot to Firebase Storage
-                const ref = storage.ref(`deposits/${Date.now()}_${file.name}`);
-                await ref.put(file);
+                const fileName = `deposits/${Date.now()}_${file.name}`;
+                const ref = storage.ref(fileName);
+                const uploadTask = await ref.put(file);
                 const screenshotUrl = await ref.getDownloadURL();
 
                 // Save deposit to Firestore with screenshot URL
@@ -2357,8 +2448,8 @@
 
                 depositForm.reset();
                 depositStatusMsg.className = 'deposit-status-msg success';
-                depositStatusMsg.innerHTML = '✅ Deposit submitted! Pending verification.';
-                showToast('Deposit submitted successfully!', 'success');
+                depositStatusMsg.innerHTML = '✅ Deposit submitted successfully! Pending verification.';
+                showToast('Deposit submitted successfully with image!', 'success');
                 loadDeposits();
 
             } catch (error) {
@@ -2366,6 +2457,9 @@
                 showToast('Failed to submit deposit: ' + error.message, 'error');
                 depositStatusMsg.className = 'deposit-status-msg error';
                 depositStatusMsg.innerHTML = '❌ Failed to submit deposit. Please try again.';
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
             }
         });
 
@@ -2394,6 +2488,7 @@
                             <strong>$${d.amount.toFixed(2)}</strong>
                             <div style="font-size:0.8rem;color:var(--text-secondary);">${d.method}</div>
                             <div style="font-size:0.7rem;color:var(--text-muted);">${d.txId || 'No Tx ID'}</div>
+                            ${d.screenshot ? `<a href="${d.screenshot}" target="_blank" style="color:var(--primary);font-size:0.7rem;"><i class="fas fa-image"></i> View Proof</a>` : ''}
                         </div>
                         <span class="status-badge ${d.status}">
                             ${d.status === 'approved' ? '✅ Approved' : d.status === 'rejected' ? '❌ Rejected' : '⏳ Pending'}
@@ -2405,7 +2500,7 @@
         }
 
         // ============================================================
-        // ADMIN: DEPOSIT REQUESTS
+        // ADMIN: DEPOSIT REQUESTS - FIXED WITH IMAGE DISPLAY
         // ============================================================
         async function loadAdminDeposits() {
             const snap = await db.collection('deposits').orderBy('createdAt', 'desc').get();
@@ -2431,7 +2526,7 @@
                         <td>${d.method}</td>
                         <td style="font-size:0.75rem;font-family:monospace;">${d.txId || '-'}</td>
                         <td>
-                            ${d.screenshot ? `<a href="${d.screenshot}" target="_blank" style="color:var(--primary);"><i class="fas fa-image"></i> View</a>` : 'No image'}
+                            ${d.screenshot ? `<a href="${d.screenshot}" target="_blank" style="color:var(--primary);font-weight:600;"><i class="fas fa-image"></i> View Screenshot</a>` : '<span style="color:var(--danger);">No image</span>'}
                         </td>
                         <td><span class="status-badge ${d.status}">${d.status}</span></td>
                         <td>
@@ -2790,7 +2885,7 @@
         console.log('👤 Regular users can sign up normally');
         console.log('💰 Deposit system with screenshot upload - FIXED!');
         console.log('✅ Admin approves deposits → user wallet credited instantly');
-        console.log('📦 Product management with stock tracking');
+        console.log('📦 Products seeded from your screenshot!');
         console.log('🔄 Real-time sync between User & Admin panels');
         console.log('🎨 God-level animations everywhere!');
     </script>
